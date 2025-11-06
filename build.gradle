@@ -115,6 +115,12 @@ obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
 }
 
+repositories {
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
+}
+
 dependencies {
     // If you wish to declare dependencies against mods, make sure to use the 'mod*' configurations so that they're remapped.
 	// See https://github.com/neoforged/ModDevGradle/blob/main/LEGACY.md#remapping-mod-dependencies for more information.
@@ -125,11 +131,16 @@ dependencies {
     // modCompileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
     // modLocalRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    modRuntimeOnly "maven.modrinth:architectury-api:9.2.14+forge"
+    modRuntimeOnly "maven.modrinth:cloth-config:11.1.136+forge"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
     // modImplementation "blank:coolmod-${mc_version}:${coolmod_version}"
+
+    modImplementation "maven.modrinth:overgeared:1.4.16"
+    modImplementation "maven.modrinth:epic-knights-shields-armor-and-weapons:9.31"
 
     // Example mod dependency using a file as dependency
     // modImplementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
