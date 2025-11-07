@@ -136,6 +136,7 @@ dependencies {
     // modLocalRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
     modRuntimeOnly "maven.modrinth:architectury-api:9.2.14+forge"
     modRuntimeOnly "maven.modrinth:cloth-config:11.1.136+forge"
+    modRuntimeOnly "maven.modrinth:jei:MoE0CHNA"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
@@ -144,16 +145,7 @@ dependencies {
 
     modImplementation "maven.modrinth:overgeared:1.4.16"
     modImplementation "maven.modrinth:epic-knights-shields-armor-and-weapons:9.31"
-    modImplementation "maven.modrinth:epic-knights-addon:1.22"
-    modImplementation "curse.maven:slavic_knights-942000:5458480" +
-            "" +
-            "" +
-            "" +
-            "  " +
-            "" +
-            "" +
-            "" +
-            ""
+    modImplementation "maven.modrinth:epic-knights-addon:KMcqUQrP"
 
     // Example mod dependency using a file as dependency
     // modImplementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
