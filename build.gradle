@@ -119,6 +119,9 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        url = "https://cursemaven.com/"
+    }
 }
 
 dependencies {
@@ -141,6 +144,16 @@ dependencies {
 
     modImplementation "maven.modrinth:overgeared:1.4.16"
     modImplementation "maven.modrinth:epic-knights-shields-armor-and-weapons:9.31"
+    modImplementation "maven.modrinth:epic-knights-addon:1.22"
+    modImplementation "curse.maven:slavic_knights-942000:5458480" +
+            "" +
+            "" +
+            "" +
+            "  " +
+            "" +
+            "" +
+            "" +
+            ""
 
     // Example mod dependency using a file as dependency
     // modImplementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
