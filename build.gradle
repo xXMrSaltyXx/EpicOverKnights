@@ -145,7 +145,6 @@ dependencies {
 
     modImplementation "maven.modrinth:overgeared:1.4.16"
     modImplementation "maven.modrinth:epic-knights-shields-armor-and-weapons:9.31"
-    modImplementation "maven.modrinth:epic-knights-addon:KMcqUQrP"
 
     // Example mod dependency using a file as dependency
     // modImplementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
