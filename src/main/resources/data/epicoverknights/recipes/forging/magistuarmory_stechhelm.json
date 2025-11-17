@@ -1,0 +1,25 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 5,
+  "has_quality": true,
+  "key": {
+    "p": {
+      "item": "overgeared:steel_plate"
+    },
+    "b": {
+      "item": "magistuarmory:barbute"
+    }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "ppp",
+    "pbp",
+    "ppp"
+  ],
+  "result": {
+    "item": "magistuarmory:stechhelm"
+  },
+  "show_notification": true
+}
