@@ -4,8 +4,7 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": {
-    "tag": "forge:weapons/steel",
-
+    "tag": "forge:forged/steel"
   },
   "result": "overgeared:steel_nugget"
 }
