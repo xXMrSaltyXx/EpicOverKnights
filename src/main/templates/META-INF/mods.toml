@@ -97,8 +97,8 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="overgeared"
     mandatory=true
-    # Version 1.4.16 or higher - adjust based on your testing
-    versionRange="[1.4.16,)"
+    # Version 1.5.14 or higher - adjust based on your testing
+    versionRange="[1.5.15,)"
     # Load AFTER Overgeared to ensure its content is available
     ordering="AFTER"
     side="BOTH"

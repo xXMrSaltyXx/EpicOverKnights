@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:diamond"
+  },
+  "base": {
+    "item": "magistuarmory:steel_stylet"
+  },
+  "result": {
+    "item": "magistuarmory:diamond_stylet"
+  },
+  "template": {
+    "item": "overgeared:diamond_upgrade_smithing_template"
+  }
+}

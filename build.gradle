@@ -143,7 +143,8 @@ dependencies {
     // The group id is ignored when searching -- in this case, it is "blank"
     // modImplementation "blank:coolmod-${mc_version}:${coolmod_version}"
 
-    modImplementation "maven.modrinth:overgeared:1.4.16"
+    // modImplementation "maven.modrinth:overgeared:1.5.15"
+    modImplementation "curse.maven:overgeared-1277786:7308215"
     modImplementation "maven.modrinth:epic-knights-shields-armor-and-weapons:9.31"
 
     // Example mod dependency using a file as dependency
