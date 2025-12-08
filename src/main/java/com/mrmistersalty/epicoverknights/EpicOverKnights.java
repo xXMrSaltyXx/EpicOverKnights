@@ -3,6 +3,7 @@ package com.mrmistersalty.epicoverknights;
 import com.mojang.logging.LogUtils;
 import com.mrmistersalty.epicoverknights.integration.EpicKnightsIntegration;
 import com.mrmistersalty.epicoverknights.integration.OvergearedIntegration;
+import com.mrmistersalty.epicoverknights.items.ModItems;
 import com.mrmistersalty.epicoverknights.util.ModLoadChecker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
@@ -31,11 +32,6 @@ public class EpicOverKnights {
     public static final String MODID = "epicoverknights";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    // Deferred Registers for custom compatibility content
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
     public EpicOverKnights() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -48,9 +44,7 @@ public class EpicOverKnights {
         LOGGER.info("EpicOverKnights initializing - Both parent mods detected");
 
         // Register deferred registers
-        BLOCKS.register(modEventBus);
-        ITEMS.register(modEventBus);
-        CREATIVE_MODE_TABS.register(modEventBus);
+        ModItems.register(modEventBus);
 
         // Register lifecycle event listeners
         modEventBus.addListener(this::commonSetup);
