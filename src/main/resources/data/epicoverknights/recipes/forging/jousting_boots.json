@@ -1,0 +1,25 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 5,
+  "has_quality": true,
+  "key": {
+    "p": {
+      "item": "overgeared:steel_plate"
+    },
+    "k": {
+      "item": "magistuarmory:knight_boots"
+    }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "   ",
+    "pkp",
+    "p p"
+  ],
+  "result": {
+    "item": "magistuarmory:jousting_boots"
+  },
+  "show_notification": true
+}
