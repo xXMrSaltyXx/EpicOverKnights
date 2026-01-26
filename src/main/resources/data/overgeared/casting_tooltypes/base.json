@@ -1,0 +1,11 @@
+{
+  "tools": [
+    ["sword", 18],
+    ["pickaxe",27],
+    ["axe", 27],
+    ["shovel", 9],
+    ["hoe", 18],
+    ["hammer", 18],
+    ["stylet", 9]
+  ]
+}

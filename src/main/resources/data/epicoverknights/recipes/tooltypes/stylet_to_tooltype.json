@@ -1,0 +1,9 @@
+{
+  "type": "overgeared:item_to_tooltype",
+  "item": [
+    {
+      "item": "epicoverknights:copper_stylet_blade"
+    }
+  ],
+  "tooltype": "stylet"
+}
