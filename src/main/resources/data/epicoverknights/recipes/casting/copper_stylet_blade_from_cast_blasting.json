@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.4,
+  "group": "misc",
+  "input": {
+    "copper": 9
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:copper_stylet_blade"
+  },
+  "tool_type": "stylet"
+}
