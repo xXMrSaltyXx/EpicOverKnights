@@ -1,0 +1,29 @@
+{
+  "type": "overgeared:forging",
+  "category": "misc",
+  "blueprint": [
+    "stylet"
+  ],
+  "requires_blueprint": false,
+  "hammering": 3,
+  "has_polishing": true,
+  "has_quality": true,
+  "key": {
+    "#": {
+      "tag": "c:ingots/tin"
+    }
+  },
+  "minimum_quality": "poor",
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "  #",
+    "   ",
+    "   "
+  ],
+  "result": {
+    "item": "epicoverknights:tin_stylet_blade"
+  },
+  "show_notification": true,
+  "tier": "stone"
+}

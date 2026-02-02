@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.4,
+  "group": "misc",
+  "input": {
+    "tin": 9
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:tin_stylet_blade"
+  },
+  "tool_type": "stylet"
+}

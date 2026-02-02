@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "epicoverknights:tin_stylet_blade"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "item": "magistuarmory:tin_stylet"
+  }
+}
