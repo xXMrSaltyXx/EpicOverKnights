@@ -136,14 +136,7 @@ dependencies {
     // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
     // modLocalRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
     modLocalRuntime "maven.modrinth:architectury-api:9.2.14+forge"
-    modLocalRuntime "maven.modrinth:cloth-config:11.1.136+forge"#
-#
-#
-#
-#
-#
-#
-#
+    modLocalRuntime "maven.modrinth:cloth-config:11.1.136+forge"
     modLocalRuntime "maven.modrinth:jei:p7yZWpEg"
     // Comment out for datagen
     modLocalRuntime "maven.modrinth:epic-knights-shields-armor-and-weapons:gwN1aUaY"
