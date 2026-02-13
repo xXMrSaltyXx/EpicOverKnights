@@ -1,0 +1,27 @@
+{
+  "type": "overgeared:forging",
+  "blueprint": [
+    "stylet"
+  ],
+  "category": "misc",
+  "hammering": 3,
+  "has_polishing": true,
+  "has_quality": true,
+  "key": {
+    "#": {
+      "item": "overgeared:heated_copper_ingot"
+    }
+  },
+  "minimum_quality": "poor",
+  "need_quenching": true,
+  "pattern": [
+    "  #"
+  ],
+  "quality_difficulty": "none",
+  "requires_blueprint": false,
+  "result": {
+    "item": "epicoverknights:copper_stylet_blade"
+  },
+  "show_notification": true,
+  "tier": "stone"
+}

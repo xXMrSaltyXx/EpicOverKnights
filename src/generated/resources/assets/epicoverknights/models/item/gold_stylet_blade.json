@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "epicoverknights:item/gold_stylet_blade"
+  }
+}
