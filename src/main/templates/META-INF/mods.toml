@@ -83,11 +83,12 @@ description='''${mod_description}'''
 
 # Epic Knights (Magistuarmory) - MANDATORY
 # This compatibility mod requires Epic Knights to function
+# Comment out for Datagen
 [[dependencies.${mod_id}]]
     modId="magistuarmory"
     mandatory=true
     # Version 9.31 or higher - adjust based on your testing
-    versionRange="[9.31,)"
+    versionRange="[10.6,)"
     # Load AFTER Epic Knights to ensure its content is available
     ordering="AFTER"
     side="BOTH"
@@ -98,7 +99,7 @@ description='''${mod_description}'''
     modId="overgeared"
     mandatory=true
     # Version 1.5.14 or higher - adjust based on your testing
-    versionRange="[1.6.6,)"
+    versionRange="[1.6.8,)"
     # Load AFTER Overgeared to ensure its content is available
     ordering="AFTER"
     side="BOTH"
