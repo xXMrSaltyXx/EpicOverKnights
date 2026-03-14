@@ -1,0 +1,27 @@
+{
+  "type": "overgeared:item_to_tooltype",
+  "item": [
+    {
+      "item": "epicoverknights:copper_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:tin_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:bronze_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:iron_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:gold_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:silver_katzbalger_blade"
+    },
+    {
+      "item": "epicoverknights:steel_katzbalger_blade"
+    }
+  ],
+  "tooltype": "katzbalger"
+}

@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.1,
+  "group": "misc",
+  "input": {
+    "tin": 18
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:tin_katzbalger_blade"
+  },
+  "tool_type": "katzbalger"
+}

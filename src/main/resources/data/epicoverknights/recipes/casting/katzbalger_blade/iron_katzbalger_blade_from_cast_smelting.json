@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_smelting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.2,
+  "group": "misc",
+  "input": {
+    "iron": 18
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:iron_katzbalger_blade"
+  },
+  "tool_type": "katzbalger"
+}

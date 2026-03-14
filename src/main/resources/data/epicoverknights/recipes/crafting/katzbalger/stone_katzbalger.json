@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "epicoverknights:stone_katzbalger_blade"
+    },
+    {
+      "item": "magistuarmory:hilt"
+    }
+  ],
+  "result": {
+    "item": "magistuarmory:stone_katzbalger"
+  }
+}

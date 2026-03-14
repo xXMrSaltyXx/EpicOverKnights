@@ -1,0 +1,29 @@
+{
+  "type": "overgeared:forging",
+  "category": "misc",
+  "blueprint": [
+    "katzbalger"
+  ],
+  "requires_blueprint": false,
+  "tier": "stone",
+  "hammering": 3,
+  "has_polishing": true,
+  "has_quality": true,
+  "key": {
+    "#": {
+      "tag": "forge:ingots/bronze"
+    }
+  },
+  "minimum_quality": "poor",
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    " # ",
+    " # ",
+    "   "
+  ],
+  "result": {
+    "item": "epicoverknights:bronze_katzbalger_blade"
+  },
+  "show_notification": true
+}

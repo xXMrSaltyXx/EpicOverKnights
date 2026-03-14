@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:rock_knapping",
+  "pattern": [
+    " x ",
+    " x ",
+    "   "
+  ],
+  "ingredient": {
+    "item": "minecraft:cobblestone"
+  },
+  "result": {
+    "item": "epicoverknights:stone_katzbalger_blade"
+  },
+  "show_notification": true
+}

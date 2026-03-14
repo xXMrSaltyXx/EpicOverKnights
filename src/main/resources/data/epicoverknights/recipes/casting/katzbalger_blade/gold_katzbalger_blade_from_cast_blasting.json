@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.25,
+  "group": "misc",
+  "input": {
+    "gold": 18
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:gold_katzbalger_blade"
+  },
+  "tool_type": "katzbalger"
+}
