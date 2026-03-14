@@ -27,6 +27,13 @@ DRY_RUN=0
 FORCE=0
 WITH_KNAPPING=1
 WITH_STONE_FORGING=0
+WITH_SMITHING=1
+WITH_TOOLTYPES=1
+SMITHING_BASE_MATERIAL="steel"
+SMITHING_RESULT_MATERIAL="diamond"
+SMITHING_ADDITION_ITEM="minecraft:diamond"
+SMITHING_TEMPLATE_ITEM="overgeared:diamond_upgrade_smithing_template"
+TOOLTYPE_INCLUDE_STONE=0
 
 # ---------------------------------------------------------------------------
 usage() {
@@ -44,6 +51,15 @@ Options:
   --without-knapping       Skip stone knapping recipe
   --with-stone-forging     Generate stone forging recipe       (default: OFF)
   --without-stone-forging  Skip stone forging recipe
+  --with-smithing          Generate smithing upgrade recipe    (default: ON)
+  --without-smithing       Skip smithing upgrade recipe
+  --with-tooltypes         Generate item_to_tooltype recipe    (default: ON)
+  --without-tooltypes      Skip item_to_tooltype recipe
+  --smithing-base <mat>    Base weapon material for smithing   (default: steel)
+  --smithing-result <mat>  Result weapon material              (default: diamond)
+  --smithing-addition <id> Smithing addition item id           (default: minecraft:diamond)
+  --smithing-template <id> Smithing template item id           (default: overgeared:diamond_upgrade_smithing_template)
+  --include-stone-tooltype Include stone blade in tooltypes    (default: OFF)
   --help                   Show this help
 
 Customisation:
@@ -51,12 +67,19 @@ Customisation:
   Edit materials in  tools/blade_recipe_generator/config/materials.tsv
 
 Placeholders used in templates:
-  __TYPE__               blade type (e.g. shortsword)
-  __MATERIAL__           material   (e.g. iron)
-  __TIER__               forging tier
-  __EXPERIENCE__         casting experience value
-  __FORGING_KEY_KIND__   "item" or "tag"
-  __FORGING_KEY_VALUE__  the actual item/tag id
+  __TYPE__                  blade type (e.g. shortsword)
+  __MATERIAL__              material   (e.g. iron)
+  __TIER__                  forging tier
+  __EXPERIENCE__            casting experience value
+  __FORGING_KEY_KIND__      "item" or "tag"
+  __FORGING_KEY_VALUE__     the actual item/tag id
+  __BLADE_ITEM__            generated blade item id
+  __WEAPON_ITEM__           generated finished weapon item id
+  __SMITHING_BASE_ITEM__    smithing base weapon item id
+  __SMITHING_RESULT_ITEM__  smithing result weapon item id
+  __SMITHING_ADDITION_ITEM__ smithing addition item id
+  __SMITHING_TEMPLATE_ITEM__ smithing template item id
+  __TOOLTYPE_ITEMS__        formatted item list for tooltypes template
 EOF
 }
 
@@ -72,6 +95,15 @@ while [[ $# -gt 0 ]]; do
     --without-knapping)   WITH_KNAPPING=0;  shift   ;;
     --with-stone-forging) WITH_STONE_FORGING=1; shift ;;
     --without-stone-forging) WITH_STONE_FORGING=0; shift ;;
+    --with-smithing)      WITH_SMITHING=1; shift ;;
+    --without-smithing)   WITH_SMITHING=0; shift ;;
+    --with-tooltypes)     WITH_TOOLTYPES=1; shift ;;
+    --without-tooltypes)  WITH_TOOLTYPES=0; shift ;;
+    --smithing-base)      SMITHING_BASE_MATERIAL="${2:-}"; shift 2 ;;
+    --smithing-result)    SMITHING_RESULT_MATERIAL="${2:-}"; shift 2 ;;
+    --smithing-addition)  SMITHING_ADDITION_ITEM="${2:-}"; shift 2 ;;
+    --smithing-template)  SMITHING_TEMPLATE_ITEM="${2:-}"; shift 2 ;;
+    --include-stone-tooltype) TOOLTYPE_INCLUDE_STONE=1; shift ;;
     --help|-h)            usage; exit 0    ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
@@ -92,7 +124,8 @@ if [[ ! -f "${MATERIALS_FILE}" ]]; then
 fi
 
 for tpl in forging.json.tpl casting_blasting.json.tpl casting_furnace.json.tpl \
-           casting_smelting.json.tpl knapping_stone.json.tpl crafting.json.tpl; do
+           casting_smelting.json.tpl knapping_stone.json.tpl crafting.json.tpl \
+           smithing.json.tpl tooltypes.json.tpl; do
   if [[ ! -f "${TEMPLATES_DIR}/${tpl}" ]]; then
     echo "Error: missing template: ${TEMPLATES_DIR}/${tpl}" >&2
     exit 1
@@ -136,6 +169,13 @@ render_template() {
   content="${content//__EXPERIENCE__/${EXPERIENCE}}"
   content="${content//__FORGING_KEY_KIND__/${FORGING_KEY_KIND}}"
   content="${content//__FORGING_KEY_VALUE__/${FORGING_KEY_VALUE}}"
+  content="${content//__BLADE_ITEM__/${BLADE_ITEM}}"
+  content="${content//__WEAPON_ITEM__/${WEAPON_ITEM}}"
+  content="${content//__SMITHING_BASE_ITEM__/${SMITHING_BASE_ITEM}}"
+  content="${content//__SMITHING_RESULT_ITEM__/${SMITHING_RESULT_ITEM}}"
+  content="${content//__SMITHING_ADDITION_ITEM__/${SMITHING_ADDITION_ITEM}}"
+  content="${content//__SMITHING_TEMPLATE_ITEM__/${SMITHING_TEMPLATE_ITEM}}"
+  content="${content//__TOOLTYPE_ITEMS__/${TOOLTYPE_ITEMS}}"
 
   printf '%s\n' "${content}" > "${out}"
   echo "  wrote ${out#${ROOT_DIR}/}"
@@ -148,12 +188,21 @@ FORGING_DIR="${DATA_ROOT}/forging/${TYPE}_blade"
 CASTING_DIR="${DATA_ROOT}/casting/${TYPE}_blade"
 CRAFTING_DIR="${DATA_ROOT}/crafting/${TYPE}"
 KNAPPING_DIR="${DATA_ROOT}/knapping"
+SMITHING_DIR="${DATA_ROOT}/smithing"
+TOOLTYPES_DIR="${DATA_ROOT}/tooltypes"
 
 maybe_mkdir "${FORGING_DIR}"
 maybe_mkdir "${CASTING_DIR}"
 maybe_mkdir "${CRAFTING_DIR}"
 [[ "${WITH_KNAPPING}" -eq 1 ]] && maybe_mkdir "${KNAPPING_DIR}"
+[[ "${WITH_SMITHING}" -eq 1 ]] && maybe_mkdir "${SMITHING_DIR}"
+[[ "${WITH_TOOLTYPES}" -eq 1 ]] && maybe_mkdir "${TOOLTYPES_DIR}"
 
+TOOLTYPE_ITEMS=""
+SMITHING_BASE_ITEM=""
+SMITHING_RESULT_ITEM=""
+BLADE_ITEM=""
+WEAPON_ITEM=""
 # ---------------------------------------------------------------------------
 # Process materials from TSV
 # columns: material  tier  experience  key_kind  key_value  forge_enabled  casting_enabled  crafting_enabled
@@ -169,6 +218,21 @@ while IFS=$'\t' read -r MATERIAL TIER EXPERIENCE FORGING_KEY_KIND FORGING_KEY_VA
   [[ "${MATERIAL:0:1}" == "#" ]] && continue
 
   echo "[${MATERIAL}]"
+
+  BLADE_ITEM="epicoverknights:${MATERIAL}_${TYPE}_blade"
+  WEAPON_ITEM="magistuarmory:${MATERIAL}_${TYPE}"
+
+  if [[ "${MATERIAL}" != "stone" || "${TOOLTYPE_INCLUDE_STONE}" -eq 1 ]]; then
+    if [[ -n "${TOOLTYPE_ITEMS}" ]]; then
+      TOOLTYPE_ITEMS+=","
+      TOOLTYPE_ITEMS+=$'\n'
+    fi
+    TOOLTYPE_ITEMS+="    {"
+    TOOLTYPE_ITEMS+=$'\n'
+    TOOLTYPE_ITEMS+="      \"item\": \"${BLADE_ITEM}\""
+    TOOLTYPE_ITEMS+=$'\n'
+    TOOLTYPE_ITEMS+="    }"
+  fi
 
   # -- Forging ---------------------------------------------------------------
   if [[ "${FORGE_ENABLED}" == "1" ]]; then
@@ -216,6 +280,25 @@ if [[ "${WITH_KNAPPING}" -eq 1 ]]; then
   render_template \
     "${TEMPLATES_DIR}/knapping_stone.json.tpl" \
     "${KNAPPING_DIR}/stone_${TYPE}_blade.json"
+fi
+
+if [[ "${WITH_SMITHING}" -eq 1 ]]; then
+  echo "[smithing]"
+  MATERIAL="${SMITHING_BASE_MATERIAL}"
+  BLADE_ITEM="epicoverknights:${MATERIAL}_${TYPE}_blade"
+  WEAPON_ITEM="magistuarmory:${MATERIAL}_${TYPE}"
+  SMITHING_BASE_ITEM="magistuarmory:${SMITHING_BASE_MATERIAL}_${TYPE}"
+  SMITHING_RESULT_ITEM="magistuarmory:${SMITHING_RESULT_MATERIAL}_${TYPE}"
+  render_template \
+    "${TEMPLATES_DIR}/smithing.json.tpl" \
+    "${SMITHING_DIR}/${SMITHING_BASE_MATERIAL}_${TYPE}_to_${SMITHING_RESULT_MATERIAL}_${TYPE}.json"
+fi
+
+if [[ "${WITH_TOOLTYPES}" -eq 1 ]]; then
+  echo "[tooltypes]"
+  render_template \
+    "${TEMPLATES_DIR}/tooltypes.json.tpl" \
+    "${TOOLTYPES_DIR}/${TYPE}_to_tooltype.json"
 fi
 
 echo "----------------------------------------------"

@@ -3,14 +3,13 @@
   "category": "equipment",
   "ingredients": [
     {
-      "item": "epicoverknights:__MATERIAL____TYPE___blade"
+      "item": "__BLADE_ITEM__"
     },
     {
       "item": "magistuarmory:hilt"
     }
   ],
   "result": {
-    "item": "magistuarmory:__MATERIAL____TYPE__"
+    "item": "__WEAPON_ITEM__"
   }
 }
-

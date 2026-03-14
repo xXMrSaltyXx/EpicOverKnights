@@ -5,12 +5,11 @@
   "experience": __EXPERIENCE__,
   "group": "misc",
   "input": {
-    "__MATERIAL__": 9
+    "__MATERIAL__": 18
   },
   "need_polishing": true,
   "result": {
-    "item": "epicoverknights:__MATERIAL____TYPE___blade"
+    "item": "__BLADE_ITEM__"
   },
   "tool_type": "__TYPE__"
 }
-

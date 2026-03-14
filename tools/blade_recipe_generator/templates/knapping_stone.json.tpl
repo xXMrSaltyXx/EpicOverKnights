@@ -1,16 +1,15 @@
 {
   "type": "overgeared:rock_knapping",
   "pattern": [
-    "  x",
-    "   ",
+    " x ",
+    " x ",
     "   "
   ],
   "ingredient": {
     "item": "minecraft:cobblestone"
   },
   "result": {
-    "item": "epicoverknights:stone___TYPE___blade"
+    "item": "__BLADE_ITEM__"
   },
   "show_notification": true
 }
-

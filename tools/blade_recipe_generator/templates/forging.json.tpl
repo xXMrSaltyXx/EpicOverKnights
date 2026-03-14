@@ -18,13 +18,12 @@
   "need_quenching": true,
   "needs_minigame": true,
   "pattern": [
-    "  #",
-    "   ",
+    " # ",
+    " # ",
     "   "
   ],
   "result": {
-    "item": "epicoverknights:__MATERIAL____TYPE___blade"
+    "item": "__BLADE_ITEM__"
   },
   "show_notification": true
 }
-
