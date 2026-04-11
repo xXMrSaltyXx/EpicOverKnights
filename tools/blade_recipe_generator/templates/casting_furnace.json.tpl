@@ -5,7 +5,7 @@
   "experience": __EXPERIENCE__,
   "input": {
     "material": {
-      "__MATERIAL__": 9
+      "__MATERIAL__": __CASTING_AMOUNT__
     }
   },
   "need_polishing": true,

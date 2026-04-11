@@ -6,7 +6,7 @@
   ],
   "requires_blueprint": false,
   "tier": "__TIER__",
-  "hammering": 3,
+  "hammering": __HAMMERING__,
   "has_polishing": true,
   "has_quality": true,
   "key": {
@@ -18,9 +18,9 @@
   "need_quenching": true,
   "needs_minigame": true,
   "pattern": [
-    "   ",
-    " # ",
-    "   "
+    "  #",
+    "## ",
+    " # "
   ],
   "result": {
     "item": "__BLADE_ITEM__"

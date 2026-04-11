@@ -6,10 +6,7 @@
       "item": "__BLADE_ITEM__"
     },
     {
-        "item": "minecraft:stick"
-    },
-    {
-      "item": "magistuarmory:hilt"
+      "item": "__CRAFTING_HANDLE__"
     }
   ],
   "result": {

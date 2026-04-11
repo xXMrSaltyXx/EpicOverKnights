@@ -34,6 +34,9 @@ SMITHING_RESULT_MATERIAL="diamond"
 SMITHING_ADDITION_ITEM="minecraft:diamond"
 SMITHING_TEMPLATE_ITEM="overgeared:diamond_upgrade_smithing_template"
 TOOLTYPE_INCLUDE_STONE=0
+CRAFTING_HANDLE="magistuarmory:hilt"
+HAMMERING=3
+CASTING_AMOUNT=9
 
 # ---------------------------------------------------------------------------
 usage() {
@@ -59,6 +62,9 @@ Options:
   --smithing-result <mat>  Result weapon material              (default: diamond)
   --smithing-addition <id> Smithing addition item id           (default: minecraft:diamond)
   --smithing-template <id> Smithing template item id           (default: overgeared:diamond_upgrade_smithing_template)
+  --crafting-handle <id>   Handle item id in crafting recipe   (default: magistuarmory:hilt)
+  --hammering <n>          Hammer strikes in forging minigame  (default: 3)
+  --casting-amount <n>     Nugget units required for casting   (default: 9, i.e. 1 ingot; use ingots*9)
   --include-stone-tooltype Include stone blade in tooltypes    (default: OFF)
   --help                   Show this help
 
@@ -103,6 +109,9 @@ while [[ $# -gt 0 ]]; do
     --smithing-result)    SMITHING_RESULT_MATERIAL="${2:-}"; shift 2 ;;
     --smithing-addition)  SMITHING_ADDITION_ITEM="${2:-}"; shift 2 ;;
     --smithing-template)  SMITHING_TEMPLATE_ITEM="${2:-}"; shift 2 ;;
+    --crafting-handle)    CRAFTING_HANDLE="${2:-}"; shift 2 ;;
+    --hammering)          HAMMERING="${2:-}"; shift 2 ;;
+    --casting-amount)     CASTING_AMOUNT="${2:-}"; shift 2 ;;
     --include-stone-tooltype) TOOLTYPE_INCLUDE_STONE=1; shift ;;
     --help|-h)            usage; exit 0    ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
@@ -176,6 +185,9 @@ render_template() {
   content="${content//__SMITHING_ADDITION_ITEM__/${SMITHING_ADDITION_ITEM}}"
   content="${content//__SMITHING_TEMPLATE_ITEM__/${SMITHING_TEMPLATE_ITEM}}"
   content="${content//__TOOLTYPE_ITEMS__/${TOOLTYPE_ITEMS}}"
+  content="${content//__CRAFTING_HANDLE__/${CRAFTING_HANDLE}}"
+  content="${content//__HAMMERING__/${HAMMERING}}"
+  content="${content//__CASTING_AMOUNT__/${CASTING_AMOUNT}}"
 
   printf '%s\n' "${content}" > "${out}"
   echo "  wrote ${out#${ROOT_DIR}/}"

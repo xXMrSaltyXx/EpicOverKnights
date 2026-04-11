@@ -51,6 +51,9 @@ Generated blade ids follow this naming scheme everywhere:
 | `--smithing-result <mat>`  | `diamond`                                      | Result weapon material used in smithing            |
 | `--smithing-addition <id>` | `minecraft:diamond`                            | Addition item id for smithing transform            |
 | `--smithing-template <id>` | `overgeared:diamond_upgrade_smithing_template` | Template item id                                   |
+| `--crafting-handle <id>`   | `magistuarmory:hilt`                           | Handle item in the crafting recipe (use `magistuarmory:pole` for polearms) |
+| `--hammering <n>`          | `3`                                            | Hammer strikes required in the forging minigame |
+| `--casting-amount <n>`     | `9`                                            | Nugget units needed for casting (9 = 1 ingot; scale by ingot count of blade) |
 | `--include-stone-tooltype` | off                                            | Also include the stone blade in `tooltypes` output |
 
 ## Customisation
@@ -87,6 +90,9 @@ Available placeholders in templates:
 | `__SMITHING_ADDITION_ITEM__` | smithing addition item id                         |
 | `__SMITHING_TEMPLATE_ITEM__` | smithing template item id                         |
 | `__TOOLTYPE_ITEMS__`         | formatted JSON item list for the tooltype mapping |
+| `__CRAFTING_HANDLE__`        | handle item id in the crafting recipe             |
+| `__HAMMERING__`              | hammer strikes for the forging minigame           |
+| `__CASTING_AMOUNT__`         | nugget units required for casting                 |
 
 ### Materials & balancing
 
