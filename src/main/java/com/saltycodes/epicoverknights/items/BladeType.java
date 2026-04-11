@@ -9,7 +9,8 @@ public enum BladeType {
     STYLET("stylet"),
     SHORTSWORD("shortsword"),
     KATZBALGER("katzbalger"),
-    PIKE("pike");
+    PIKE("pike"),
+    AHLSPIESS("ahlspiess");
 
     private final String name;
 

@@ -34,5 +34,14 @@
   "item.epicoverknights.bronze_pike_blade": "Bronze Pike Blade",
   "item.epicoverknights.iron_pike_blade": "Iron Pike Blade",
   "item.epicoverknights.steel_pike_blade": "Steel Pike Blade",
-  "tooltype.overgeared.pike": "Pike"
+  "tooltype.overgeared.pike": "Pike",
+  "item.epicoverknights.copper_ahlspiess_blade": "Copper Ahlspiess Blade",
+  "item.epicoverknights.gold_ahlspiess_blade": "Gold Ahlspiess Blade",
+  "item.epicoverknights.tin_ahlspiess_blade": "Tin Ahlspiess Blade",
+  "item.epicoverknights.stone_ahlspiess_blade": "Stone Ahlspiess Blade",
+  "item.epicoverknights.silver_ahlspiess_blade": "Silver Ahlspiess Blade",
+  "item.epicoverknights.bronze_ahlspiess_blade": "Bronze Ahlspiess Blade",
+  "item.epicoverknights.iron_ahlspiess_blade": "Iron Ahlspiess Blade",
+  "item.epicoverknights.steel_ahlspiess_blade": "Steel Ahlspiess Blade",
+  "tooltype.overgeared.ahlspiess": "Ahlspiess"
 }
