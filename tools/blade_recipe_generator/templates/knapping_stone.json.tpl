@@ -1,9 +1,9 @@
 {
   "type": "overgeared:rock_knapping",
   "pattern": [
-    "   ",
-    " x ",
-    "   "
+    "__KNAPPING_ROW1__",
+    "__KNAPPING_ROW2__",
+    "__KNAPPING_ROW3__"
   ],
   "ingredient": {
     "item": "minecraft:cobblestone"

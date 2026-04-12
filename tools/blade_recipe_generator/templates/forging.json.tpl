@@ -18,9 +18,9 @@
   "need_quenching": true,
   "needs_minigame": true,
   "pattern": [
-    "  #",
-    "## ",
-    " # "
+    "__PATTERN_ROW1__",
+    "__PATTERN_ROW2__",
+    "__PATTERN_ROW3__"
   ],
   "result": {
     "item": "__BLADE_ITEM__"
