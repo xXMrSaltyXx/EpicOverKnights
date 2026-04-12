@@ -97,5 +97,14 @@
   "item.epicoverknights.bronze_concavehalberd_blade": "Bronze Concave Halberd Blade",
   "item.epicoverknights.iron_concavehalberd_blade": "Iron Concave Halberd Blade",
   "item.epicoverknights.steel_concavehalberd_blade": "Steel Concave Halberd Blade",
-  "tooltype.overgeared.concavehalberd": "Concave Halberd"
+  "tooltype.overgeared.concavehalberd": "Concave Halberd",
+  "item.epicoverknights.copper_heavymace_blade": "Copper Heavy Mace Blade",
+  "item.epicoverknights.gold_heavymace_blade": "Gold Heavy Mace Blade",
+  "item.epicoverknights.tin_heavymace_blade": "Tin Heavy Mace Blade",
+  "item.epicoverknights.stone_heavymace_blade": "Stone Heavy Mace Blade",
+  "item.epicoverknights.silver_heavymace_blade": "Silver Heavy Mace Blade",
+  "item.epicoverknights.bronze_heavymace_blade": "Bronze Heavy Mace Blade",
+  "item.epicoverknights.iron_heavymace_blade": "Iron Heavy Mace Blade",
+  "item.epicoverknights.steel_heavymace_blade": "Steel Heavy Mace Blade",
+  "tooltype.overgeared.heavymace": "Heavy Mace"
 }

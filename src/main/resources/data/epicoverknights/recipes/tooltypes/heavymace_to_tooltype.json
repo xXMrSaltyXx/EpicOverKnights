@@ -1,0 +1,27 @@
+{
+  "type": "overgeared:item_to_tooltype",
+  "item": [
+    {
+      "item": "epicoverknights:copper_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:tin_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:bronze_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:iron_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:gold_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:silver_heavymace_blade"
+    },
+    {
+      "item": "epicoverknights:steel_heavymace_blade"
+    }
+  ],
+  "tooltype": "heavymace"
+}

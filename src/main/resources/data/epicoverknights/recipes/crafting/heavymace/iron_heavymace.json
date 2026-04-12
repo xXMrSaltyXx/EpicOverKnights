@@ -1,0 +1,18 @@
+{
+  "type": "overgeared:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "epicoverknights:iron_heavymace_blade"
+    },
+    {
+      "item": "magistuarmory:hilt"
+    },
+    {
+      "tag": "forge:rods/wooden"
+    }
+  ],
+  "result": {
+    "item": "magistuarmory:iron_heavymace"
+  }
+}

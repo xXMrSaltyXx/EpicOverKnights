@@ -19,7 +19,7 @@ public class RecipeRemover {
      * Weapon types from magistuarmory whose recipes should be removed for every external recipe material.
      * To also remove recipes for a new weapon type, add it here by its magistuarmory name.
      */
-    private static final String[] MAGISTU_WEAPON_TYPES = {"stylet", "shortsword", "katzbalger", "pike", "ranseur", "ahlspiess", "bastardsword", "estoc", "claymore", "zweihander", "lochaberaxe", "concavehalberd"};
+    private static final String[] MAGISTU_WEAPON_TYPES = {"stylet", "shortsword", "katzbalger", "pike", "ranseur", "ahlspiess", "bastardsword", "estoc", "claymore", "zweihander", "lochaberaxe", "concavehalberd", "heavymace"};
 
     /**
      * Material names used by magistuarmory recipe IDs.
