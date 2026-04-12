@@ -1,0 +1,29 @@
+{
+  "type": "overgeared:forging",
+  "category": "misc",
+  "blueprint": [
+    "lucernhammer"
+  ],
+  "requires_blueprint": false,
+  "tier": "stone",
+  "hammering": 5,
+  "has_polishing": true,
+  "has_quality": true,
+  "key": {
+    "#": {
+      "tag": "forge:ingots/tin"
+    }
+  },
+  "minimum_quality": "poor",
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "## ",
+    "  #",
+    "   "
+  ],
+  "result": {
+    "item": "epicoverknights:tin_lucernhammer_blade"
+  },
+  "show_notification": true
+}

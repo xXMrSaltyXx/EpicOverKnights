@@ -1,0 +1,27 @@
+{
+  "type": "overgeared:item_to_tooltype",
+  "item": [
+    {
+      "item": "epicoverknights:copper_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:tin_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:bronze_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:iron_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:gold_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:silver_lucernhammer_blade"
+    },
+    {
+      "item": "epicoverknights:steel_lucernhammer_blade"
+    }
+  ],
+  "tooltype": "lucernhammer"
+}

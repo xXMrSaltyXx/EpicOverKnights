@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_smelting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.1,
+  "group": "misc",
+  "input": {
+    "tin": 27
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:tin_lucernhammer_blade"
+  },
+  "tool_type": "lucernhammer"
+}

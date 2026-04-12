@@ -115,5 +115,14 @@
   "item.epicoverknights.bronze_heavywarhammer_blade": "Bronze Heavy War Hammer Blade",
   "item.epicoverknights.iron_heavywarhammer_blade": "Iron Heavy War Hammer Blade",
   "item.epicoverknights.steel_heavywarhammer_blade": "Steel Heavy War Hammer Blade",
-  "tooltype.overgeared.heavywarhammer": "Heavy War Hammer"
+  "tooltype.overgeared.heavywarhammer": "Heavy War Hammer",
+  "item.epicoverknights.copper_lucernhammer_blade": "Copper Lucerne Hammer Blade",
+  "item.epicoverknights.gold_lucernhammer_blade": "Gold Lucerne Hammer Blade",
+  "item.epicoverknights.tin_lucernhammer_blade": "Tin Lucerne Hammer Blade",
+  "item.epicoverknights.stone_lucernhammer_blade": "Stone Lucerne Hammer Blade",
+  "item.epicoverknights.silver_lucernhammer_blade": "Silver Lucerne Hammer Blade",
+  "item.epicoverknights.bronze_lucernhammer_blade": "Bronze Lucerne Hammer Blade",
+  "item.epicoverknights.iron_lucernhammer_blade": "Iron Lucerne Hammer Blade",
+  "item.epicoverknights.steel_lucernhammer_blade": "Steel Lucerne Hammer Blade",
+  "tooltype.overgeared.lucernhammer": "Lucerne Hammer"
 }
