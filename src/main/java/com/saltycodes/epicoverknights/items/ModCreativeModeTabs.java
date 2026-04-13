@@ -11,7 +11,7 @@ public class ModCreativeModeTabs {
     public static void onBuildCreativeTab(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey().location().equals(ResourceLocation.fromNamespaceAndPath("overgeared", "overgeared_tab"))) {
             for (BladeType type : BladeType.values()) {
-                for (BladeMaterial material : BladeMaterial.values()) {
+                for (BladeMaterial material : type.getMaterials()) {
                     event.accept(ModItems.getBlade(type, material).get());
                 }
             }

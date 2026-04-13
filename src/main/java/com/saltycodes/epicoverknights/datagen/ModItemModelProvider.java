@@ -19,7 +19,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (BladeType type : BladeType.values()) {
-            for (BladeMaterial material : BladeMaterial.values()) {
+            for (BladeMaterial material : type.getMaterials()) {
                 simpleItem(ModItems.getBlade(type, material));
             }
         }

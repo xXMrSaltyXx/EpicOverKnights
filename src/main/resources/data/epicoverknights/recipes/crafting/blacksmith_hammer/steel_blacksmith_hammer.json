@@ -1,0 +1,18 @@
+{
+  "type": "overgeared:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "epicoverknights:steel_blacksmith_hammer_blade"
+    },
+    {
+      "item": "magistuarmory:hilt"
+    },
+    {
+      "tag": "forge:rods/wooden"
+    }
+  ],
+  "result": {
+    "item": "magistuarmory:blacksmith_hammer"
+  }
+}

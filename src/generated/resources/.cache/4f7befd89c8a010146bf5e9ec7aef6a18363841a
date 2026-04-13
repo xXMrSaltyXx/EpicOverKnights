@@ -1,4 +1,4 @@
-// 1.20.1	2026-04-13T15:05:06.595543274	Item Models: epicoverknights
+// 1.20.1	2026-04-13T15:42:52.82673303	Item Models: epicoverknights
 34fe44e81f30a34ff3dcc7f01d8af1dc5a0430b5 assets/epicoverknights/models/item/bronze_ahlspiess_blade.json
 1dc2396246a7c23bb7e5a1f159812cdfd5e362e0 assets/epicoverknights/models/item/bronze_bastardsword_blade.json
 e95ac9638b58585512bc01862259c9231828ee7c assets/epicoverknights/models/item/bronze_claymore_blade.json
@@ -81,6 +81,7 @@ e04de0367255e9efee4053ba0fafdee0b6d7ce3c assets/epicoverknights/models/item/silv
 4768d2e0ed303857fc834131295daa2952df020b assets/epicoverknights/models/item/silver_zweihander_blade.json
 2a2eb2b45599cb1b10e77de0dc8928b57c18d079 assets/epicoverknights/models/item/steel_ahlspiess_blade.json
 d416bfe4e1eee219c3cf4fbacad1a0daf72b12c3 assets/epicoverknights/models/item/steel_bastardsword_blade.json
+57bbd69b261e47355aa2c819dc675b8d308cbb94 assets/epicoverknights/models/item/steel_blacksmith_hammer_blade.json
 f3a25cdf7117a591225982e76c810030b5dd3211 assets/epicoverknights/models/item/steel_claymore_blade.json
 015a8af3c1338bf057653f155fec9a985a73fdc3 assets/epicoverknights/models/item/steel_concavehalberd_blade.json
 9deaa14428e0e5c234aa1ca99b889afad071f6ca assets/epicoverknights/models/item/steel_estoc_blade.json

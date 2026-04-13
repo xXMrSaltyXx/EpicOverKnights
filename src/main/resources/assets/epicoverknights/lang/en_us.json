@@ -143,5 +143,7 @@
   "item.epicoverknights.bronze_guisarme_blade": "Bronze Guisarme Blade",
   "item.epicoverknights.iron_guisarme_blade": "Iron Guisarme Blade",
   "item.epicoverknights.steel_guisarme_blade": "Steel Guisarme Blade",
-  "tooltype.overgeared.guisarme": "Guisarme"
+  "tooltype.overgeared.guisarme": "Guisarme",
+  "item.epicoverknights.steel_blacksmith_hammer_blade": "Steel Blacksmith Hammer Blade",
+  "tooltype.overgeared.blacksmith_hammer": "Blacksmith Hammer"
 }

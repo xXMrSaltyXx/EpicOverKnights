@@ -1,0 +1,15 @@
+{
+  "type": "overgeared:cast_blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.35,
+  "group": "misc",
+  "input": {
+    "steel": 45
+  },
+  "need_polishing": true,
+  "result": {
+    "item": "epicoverknights:steel_blacksmith_hammer_blade"
+  },
+  "tool_type": "blacksmith_hammer"
+}

@@ -26,7 +26,7 @@ public class ModItems {
         Map<BladeType, Map<BladeMaterial, RegistryObject<Item>>> blades = new EnumMap<>(BladeType.class);
         for (BladeType type : BladeType.values()) {
             Map<BladeMaterial, RegistryObject<Item>> materialMap = new EnumMap<>(BladeMaterial.class);
-            for (BladeMaterial material : BladeMaterial.values()) {
+            for (BladeMaterial material : type.getMaterials()) {
                 String id = material.getName() + "_" + type.getName() + "_blade";
                 materialMap.put(material, ITEMS.register(id, () -> new Item(new Item.Properties())));
             }
