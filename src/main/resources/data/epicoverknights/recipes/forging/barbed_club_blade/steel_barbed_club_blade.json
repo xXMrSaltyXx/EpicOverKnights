@@ -6,7 +6,7 @@
   ],
   "requires_blueprint": false,
   "tier": "iron",
-  "hammering": 7,
+  "hammering": 5,
   "has_polishing": true,
   "has_quality": true,
   "key": {
