@@ -1,0 +1,9 @@
+{
+  "type": "overgeared:item_to_tooltype",
+  "item": [
+    {
+      "item": "epicoverknights:steel_barbed_club_blade"
+    }
+  ],
+  "tooltype": "barbed_club"
+}

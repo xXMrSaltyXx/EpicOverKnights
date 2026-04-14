@@ -31,7 +31,8 @@ public enum BladeType {
     LUCERNHAMMER("lucernhammer"),
     MORGENSTERN("morgenstern"),
     GUISARME("guisarme"),
-    BLACKSMITH_HAMMER("blacksmith_hammer", BladeMaterial.STEEL);
+    BLACKSMITH_HAMMER("blacksmith_hammer", BladeMaterial.STEEL),
+    BARBED_CLUB("barbed_club", BladeMaterial.STEEL);
 
     private final String name;
     private final Set<BladeMaterial> materials;

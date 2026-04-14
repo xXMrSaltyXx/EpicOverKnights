@@ -1,0 +1,32 @@
+{
+  "type": "overgeared:forging",
+  "category": "misc",
+  "blueprint": [
+    "barbed_club"
+  ],
+  "requires_blueprint": false,
+  "tier": "iron",
+  "hammering": 7,
+  "has_polishing": true,
+  "has_quality": true,
+  "key": {
+    "a": {
+      "item": "overgeared:steel_nugget"
+    },
+    "c": {
+      "item": "overgeared:heated_steel_ingot"
+    }
+  },
+  "minimum_quality": "poor",
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    " ac",
+    "aca",
+    " a "
+  ],
+  "result": {
+    "item": "epicoverknights:steel_barbed_club_blade"
+  },
+  "show_notification": true
+}

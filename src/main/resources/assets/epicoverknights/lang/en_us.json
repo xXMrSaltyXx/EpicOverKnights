@@ -145,5 +145,7 @@
   "item.epicoverknights.steel_guisarme_blade": "Steel Guisarme Blade",
   "tooltype.overgeared.guisarme": "Guisarme",
   "item.epicoverknights.steel_blacksmith_hammer_blade": "Steel Blacksmith Hammer Blade",
-  "tooltype.overgeared.blacksmith_hammer": "Blacksmith Hammer"
+  "tooltype.overgeared.blacksmith_hammer": "Blacksmith Hammer",
+  "item.epicoverknights.steel_barbed_club_blade": "Steel Barbed Club Blade",
+  "tooltype.overgeared.barbed_club": "Barbed Club"
 }
