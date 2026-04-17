@@ -1,0 +1,21 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 9,
+  "has_quality": true,
+  "key": {
+    "P": { "item": "overgeared:steel_plate" },
+    "N": { "item": "overgeared:steel_nugget" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "PPP",
+    "PNP",
+    "PNP"
+  ],
+  "result": {
+    "item": "magistuarmory:gothic_leggings"
+  },
+  "show_notification": true
+}

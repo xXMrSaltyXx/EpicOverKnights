@@ -1,0 +1,22 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 7,
+  "has_quality": true,
+  "key": {
+    "P": { "item": "overgeared:steel_plate" },
+    "H": { "item": "magistuarmory:halfarmor_chestplate" },
+    "N": { "item": "overgeared:steel_nugget" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "P P",
+    "PHP",
+    "NPN"
+  ],
+  "result": {
+    "item": "magistuarmory:gothic_chestplate"
+  },
+  "show_notification": true
+}
