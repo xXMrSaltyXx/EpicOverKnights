@@ -52,6 +52,9 @@ public class ModItems {
     public static final RegistryObject<Item> SILVER_PLATE = ITEMS.register("silver_plate",
             () -> new Item(new Item.Properties()));
 
+    public static final RegistryObject<Item> CRUSADER_SURCOAT = ITEMS.register("crusader_surcoat",
+            () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
     }

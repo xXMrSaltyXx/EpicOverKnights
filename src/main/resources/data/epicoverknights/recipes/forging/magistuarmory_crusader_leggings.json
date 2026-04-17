@@ -1,0 +1,21 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 6,
+  "has_quality": true,
+  "key": {
+    "I": { "item": "overgeared:heated_steel_ingot" },
+    "C": { "item": "magistuarmory:steel_chainmail" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "CCC",
+    "I I",
+    "I I"
+  ],
+  "result": {
+    "item": "magistuarmory:crusader_leggings"
+  },
+  "show_notification": true
+}

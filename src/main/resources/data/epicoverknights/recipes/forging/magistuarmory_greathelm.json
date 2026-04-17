@@ -1,0 +1,21 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 9,
+  "has_quality": true,
+  "key": {
+    "I": { "item": "overgeared:heated_steel_ingot" },
+    "C": { "item": "magistuarmory:steel_chainmail" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "III",
+    "I I",
+    "ICI"
+  ],
+  "result": {
+    "item": "magistuarmory:greathelm"
+  },
+  "show_notification": true
+}

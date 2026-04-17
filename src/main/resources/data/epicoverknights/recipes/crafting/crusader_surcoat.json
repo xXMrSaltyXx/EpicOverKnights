@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "F F",
+    "F F",
+    "FFF"
+  ],
+  "key": {
+    "F": { "item": "magistuarmory:woolen_fabric" }
+  },
+  "result": {
+    "item": "epicoverknights:crusader_surcoat",
+    "count": 1
+  }
+}
