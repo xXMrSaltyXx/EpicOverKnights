@@ -28,6 +28,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ModItems.TIN_PLATE);
         simpleItem(ModItems.SILVER_PLATE);
         simpleItem(ModItems.CRUSADER_SURCOAT);
+        simpleItem(ModItems.HUSSAR_WINGS);
     }
 
     private void simpleItem(RegistryObject<Item> item) {

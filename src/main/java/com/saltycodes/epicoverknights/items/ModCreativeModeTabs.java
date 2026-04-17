@@ -20,6 +20,7 @@ public class ModCreativeModeTabs {
             event.accept(ModItems.TIN_PLATE.get());
             event.accept(ModItems.SILVER_PLATE.get());
             event.accept(ModItems.CRUSADER_SURCOAT.get());
+            event.accept(ModItems.HUSSAR_WINGS.get());
         }
     }
 }
