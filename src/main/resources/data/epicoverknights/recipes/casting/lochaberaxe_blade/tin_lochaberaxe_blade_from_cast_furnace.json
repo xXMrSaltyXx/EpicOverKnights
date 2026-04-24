@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.1,
   "input": {
-    "material": {
-      "tin": 27
-    }
+    "tin": 27
   },
   "need_polishing": true,
   "result": {

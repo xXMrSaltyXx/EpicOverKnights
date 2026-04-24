@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.2,
   "input": {
-    "material": {
-      "iron": 28
-    }
+    "iron": 28
   },
   "need_polishing": true,
   "result": {

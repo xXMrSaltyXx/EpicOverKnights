@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.1,
   "input": {
-    "material": {
-      "copper": 18
-    }
+    "copper": 18
   },
   "need_polishing": true,
   "result": {
@@ -14,4 +11,3 @@
   },
   "tool_type": "shortsword"
 }
-

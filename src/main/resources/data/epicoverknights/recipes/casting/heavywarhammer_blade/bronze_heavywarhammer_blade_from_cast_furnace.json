@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.15,
   "input": {
-    "material": {
-      "bronze": 45
-    }
+    "bronze": 45
   },
   "need_polishing": true,
   "result": {

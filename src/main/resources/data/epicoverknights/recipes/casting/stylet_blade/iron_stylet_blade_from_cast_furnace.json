@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.2,
   "input": {
-    "material": {
-      "iron": 9
-    }
+    "iron": 9
   },
   "need_polishing": true,
   "result": {
@@ -14,4 +11,3 @@
   },
   "tool_type": "stylet"
 }
-

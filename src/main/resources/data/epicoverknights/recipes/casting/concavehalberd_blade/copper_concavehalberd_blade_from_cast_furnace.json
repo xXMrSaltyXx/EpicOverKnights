@@ -1,12 +1,9 @@
 {
   "type": "overgeared:casting",
-  "category": "misc",
   "cookingtime": 150,
   "experience": 0.1,
   "input": {
-    "material": {
-      "copper": 36
-    }
+    "copper": 36
   },
   "need_polishing": true,
   "result": {

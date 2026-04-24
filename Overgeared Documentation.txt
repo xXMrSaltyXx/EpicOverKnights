@@ -1,0 +1,694 @@
+﻿FOR 1.21.1 ITS “result”: { “id”: “item_id” }
+Recipe Types
+Forging
+{
+  "type": "overgeared:forging",
+  "category": "misc",
+  "blueprint": [
+    "pickaxe"
+  ],
+  "requires_blueprint": false,
+  "tier": "stone",
+  "hammering": 3,
+  "has_quality": true,
+  "minimum_quality": "poor",
+  "needs_minigame": false,
+  "has_polishing": true,
+  "need_quenching": true,
+  "pattern": [
+    "###",
+    "# #"
+  ],
+  "quality_difficulty": "master",
+  "key": {
+    "#": {
+      "item": "overgeared:heated_iron_ingot",
+      "requires_heated": true,
+"transfer_nbt": false
+    }
+  },
+  "result": {
+    "item": "overgeared:iron_pickaxe_head"
+  },
+  "result_failed": {
+    "item": "minecraft:iron_ingot"
+  },
+  "show_notification": true
+}
+
+
+FOR 1.21.1 ITS “result”: { “id”: “item_id” }, same with “result_failed”
+"blueprint" (OPTIONAL) - required blueprint for the forging item
+"requires_blueprint" (OPTIONAL) - if the blueprint is a hard requirement for forging the item
+"tier" (OPTIONAL) - which tier of anvil is required to make certain items. Default is iron.
+        Following tiers: stone, iron, above_a, above_b
+"hammering" - the required hits to forge an item
+"has_quality" - whether if the item has a quality or not
+"minimum_quality" (OPTIONAL) - the lowest possible quality you can get from a forging minigame, as an example if it's set to "well" its lowest quality will be well forged. 
+Following forging qualities: poor, well, expert, perfect, master
+"needs_minigame" (OPTIONAL) - if "has_quality" is turned off, it can be set if for items that has a minigame but no quality
+"has_polishing" (OPTIONAL) - whether the item needs to be polished on a grindstone or not, default is true
+“need_quenching” (OPTIONAL) - whether the item needs to be quenched after crafting or not, default is false for armor items, true for the others
+“requires_heated” (OPTIONAL) - if this item needs to be heated for the recipe to work
+“transfer_nbt” (OPTIONAL) - if this item’s nbt tags will be transferred to the result item (including damage)
+"result_failed" (OPTIONAL) - if has_quality is turned off and needs_minigame is turned on, it can be the resulting item if the player does poorly in the minigame. Does not work if has_quality is true
+"quality_difficulty" (OPTIONAL) - sets the minigame’s difficulty, overriding the difficulty normally determined by the blueprint’s quality. Higher values make the minigame harder. If not specified, the blueprint’s quality is used by default.
+Knapping
+{
+  "type": "overgeared:rock_knapping",
+  "pattern": [
+    "xxx",
+    "xx "
+  ],
+  "ingredient": {
+    "item": "overgeared:knappable_rock"
+  },
+  "result": {
+    "item": "overgeared:stone_pickaxe_head"
+  },
+  "show_notification": true
+}
+
+
+It's a 3x3 grid similar to a crafting table
+Casting (different from Cast Smelting/Blasting)
+{
+ "type": "overgeared:casting",
+ "cookingtime": 150,
+ "experience": 0.4,
+ "input": {
+   "copper": 27
+ },
+ "need_polishing": true,
+ "result": {
+   "count": 1,
+   "id": "overgeared:copper_axe_head"
+ },
+ "tool_type": "axe"
+}
+Shapeless Crafting (Overgeared) 
+1.20.1
+{
+ "type": "overgeared:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+   {
+     "item": "minecraft:leather"
+   },
+   {
+     "item": "minecraft:shears",
+     "remainder": true,
+     "durability_decrease": 1
+   }
+ ],
+ "result": {
+   "item": "overknights:leather_strip",
+   "count": 4
+ }
+}
+
+
+1.21.1
+{
+ "type": "overgeared:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+   {
+     "item": "minecraft:copper_ingot"
+   },
+   {
+     "item": "minecraft:stick",
+     "remainder": true,
+     "durability_decrease": 1
+   }
+ ],
+ "result": {
+   "id": "overgeared:copper_smithing_hammer",
+   "count": 1
+ }
+}
+
+
+This is important so the quality of the tool/weapon gets applied to the final tool
+“remainder” - if an item remains in the crafting table after crafting
+“durability_decrease” - how much durability to decrease if the item has durability
+Cooling/Quenching
+Replace overgeared:heatable_metals item tag
+
+
+{
+ "type": "overgeared:cooling",
+ "input": {
+   "item": "overgeared:heated_crude_steel"
+ },
+ "output": {
+   "item": "overgeared:crude_steel"
+ }
+}
+Grinding
+Replace overgeared:grindable and overgeared:grinded item tags
+
+
+{
+ "type": "overgeared:grinding",
+ "input": {
+   "item": "minecraft:diamond"
+ },
+ "output": {
+   "item": "overgeared:diamond_shard"
+ }
+}
+Brick Alloy Smelting (maximum 4 inputs)
+Shapeless
+{
+ "type": "overgeared:alloy_smelting",
+ "category": "misc",
+ "group": "misc",
+ "experience": 0.5,
+ "cookingtime": 250,
+ "ingredients": [
+   {
+     "item": "minecraft:iron_ingot"
+   },
+   {
+     "item": "minecraft:iron_ingot"
+   },
+   {
+     "item": "minecraft:iron_ingot"
+   },
+   {
+     "item": "minecraft:coal"
+   }
+ ],
+ "result": {
+   "item": "overgeared:crude_steel",
+   "count": 4
+ }
+}
+Shaped
+{
+ "type": "overgeared:shaped_alloy_smelting",
+ "category": "misc",
+ "group": "misc",
+ "experience": 0.5,
+ "cookingtime": 250,
+ "pattern": [
+   "II",
+   "IC"
+ ],
+ "key": {
+   "I": { "item": "minecraft:iron_ingot" },
+   "C": { "item": "minecraft:coal" }
+ },
+ "result": {
+   "item": "overgeared:crude_steel",
+   "count": 4
+ }
+}
+
+
+Nether Alloy Smelting (maximum 9 inputs)
+Shapeless
+{
+ "type": "overgeared:nether_alloy_smelting",
+ "category": "misc",
+ "group": "misc",
+ "experience": 2,
+ "cookingtime": 300,
+ "ingredients": [
+   {
+     "item": "minecraft:netherite_scrap"
+   },
+   {
+     "item": "minecraft:netherite_scrap"
+   },
+   {
+     "item": "minecraft:netherite_scrap"
+   },
+   {
+     "item": "minecraft:netherite_scrap"
+   },
+   {
+     "item": "minecraft:gold_ingot"
+   },
+   {
+     "item": "minecraft:gold_ingot"
+   },
+   {
+     "item": "minecraft:gold_ingot"
+   },
+   {
+     "item": "minecraft:gold_ingot"
+   }
+ ],
+ "result": {
+   "item": "minecraft:netherite_ingot"
+ }
+}
+Shaped
+{
+ "type": "overgeared:shaped_nether_alloy_smelting",
+ "category": "misc",
+ "group": "misc",
+ "experience": 2.0,
+ "cookingtime": 300,
+ "pattern": [
+   "NNG",
+   "NNG",
+   "GG "
+ ],
+ "key": {
+   "N": { "item": "minecraft:netherite_scrap" },
+   "G": { "item": "minecraft:gold_ingot" }
+ },
+ "result": {
+   "item": "overgeared:heated_netherite_composite"
+ }
+}
+
+
+Arrow Fletching
+{
+ "type": "overgeared:fletching",
+ "material": {
+   "feather": {
+     "item": "minecraft:feather"
+   },
+   "shaft": {
+     "item": "minecraft:stick"
+   },
+   "tip": {
+     "item": "overgeared:iron_arrow_head"
+   }
+ },
+ "result": {
+   "count": 4,
+   "item": "overgeared:iron_arrow"
+ },
+ "result_lingering": {
+   "count": 4,
+   "item": "overgeared:iron_arrow"
+ },
+ "result_tipped": {
+   "count": 4,
+   "item": "overgeared:iron_arrow"
+ }
+}
+
+
+Cast Smelting and Blasting
+Smelting
+{
+ "type": "overgeared:cast_smelting",
+ "category": "misc",
+ "cookingtime": 150,
+ "experience": 0.7,
+ "group": "misc",
+ "input": {
+   "iron": 27
+ },
+ "need_polishing": true,
+ "result": {
+   "item": "overgeared:iron_axe_head"
+ },
+ "tool_type": "axe"
+}
+
+
+The number next to “iron” is amount of nuggets
+Blasting
+{
+ "type": "overgeared:cast_blasting",
+ "category": "misc",
+ "cookingtime": 75,
+ "experience": 0.7,
+ "group": "misc",
+ "input": {
+   "iron": 27
+ },
+ "need_polishing": true,
+ "result": {
+   "item": "overgeared:iron_axe_head"
+ },
+ "tool_type": "axe"
+}
+Item to Tool Types (for making Casts and Casting)
+{
+ "type": "overgeared:item_to_tooltype",
+ "item": [
+   {
+     "item": "overgeared:stone_axe_head"
+   },
+   {
+     "item": "overgeared:iron_axe_head"
+   },
+   {
+     "item": "overgeared:golden_axe_head"
+   },
+   {
+     "item": "overgeared:copper_axe_head"
+   },
+   {
+     "item": "overgeared:steel_axe_head"
+   }
+ ],
+ "tooltype": "axe"
+}
+
+
+NBT-keeping Smelting and Blasting
+(input items’ NBT tags are copied over to the result items)
+Smelting
+{
+ "type": "overgeared:nbt_smelting",
+ "category": "misc",
+ "ingredient": {
+   "item": "overgeared:unfired_tool_cast"
+ },
+ "result": {
+   "item": "overgeared:clay_tool_cast"
+ },
+ "experience": 0.5,
+ "cookingtime": 200
+}
+Blasting
+{
+ "type": "overgeared:nbt_blasting",
+ "category": "misc",
+ "ingredient": {
+   "item": "overgeared:unfired_tool_cast"
+ },
+ "result": {
+   "item": "overgeared:clay_tool_cast"
+ },
+ "experience": 0.5,
+ "cookingtime": 100
+}
+
+
+NBT-adding Campfire, Smelting and Blasting (1.20.1 only)
+{
+ "type": "overgeared:nbt_add_campfire_cooking",
+ "ingredient": {
+   "item": "overgeared:steel_sword_blade"
+ },
+ "result": {
+   "item": "overgeared:steel_sword_blade",
+   "nbt": {
+     "Heated": true
+   }
+ },
+ "experience": 0,
+ "cookingtime": 200
+}
+
+
+IDs are: “nbt_add_campfire_cooking”, “nbt_add_smelting” and “nbt_add_blasting”
+Datapacks (folder overgeared)
+overgeared/blueprint_tooltypes/
+{
+ "tooltypes": [
+   "SWORD",
+   "AXE",
+   "HAMMER",
+   "SPEAR",
+   "MULTITOOL"
+ ]
+}
+overgeared/casting_tooltypes/
+{
+ "tools": [
+   ["sword", 18],
+   ["pickaxe",27],
+   ["axe", 27],
+   ["shovel", 9],
+   ["hoe", 18],
+   ["hammer", 18]
+ ]
+}
+
+
+overgeared/durability_blacklist/
+{
+ "item": [
+   {
+     "item": "minecraft:diamond_sword"
+   },
+   {
+     "tag": "overgeared:smithing_hammers"
+   }
+ ]
+}
+overgeared/grinding_blacklist/
+Same as durability_blacklist
+overgeared/material_settings/
+{
+ "materials": [
+   [
+     "minecraft:iron_nugget",
+     "iron",
+     1
+   ],
+   [
+     "minecraft:iron_ingot",
+     "iron",
+     9
+   ],
+   [
+     "minecraft:iron_block",
+     "iron",
+     81
+   ],
+   [
+     "minecraft:gold_nugget",
+     "gold",
+     1
+   ],
+   [
+     "minecraft:gold_ingot",
+     "gold",
+     9
+   ],
+   [
+     "minecraft:gold_block",
+     "gold",
+     81
+   ],
+   [
+     "minecraft:copper_ingot",
+     "copper",
+     9
+   ],
+   [
+     "#forge:nuggets/copper",
+     "copper",
+     1
+   ],
+   [
+     "minecraft:copper_block",
+     "copper",
+     81
+   ],
+   [
+     "#forge:ingots/steel",
+     "steel",
+     9
+   ],
+   [
+     "#forge:nuggets/steel",
+     "steel",
+     1
+   ],
+   [
+     "#forge:storage_blocks/steel",
+     "steel",
+     81
+   ],
+   [
+     "#forge:ingots/silver",
+     "silver",
+     9
+   ],
+   [
+     "#forge:nuggets/silver",
+     "silver",
+     1
+   ],
+   [
+     "#forge:storage_blocks/silver",
+     "silver",
+     81
+   ]
+ ]
+}
+overgeared/knapping_resources/
+{
+ "knapping": [
+   {
+     "item": "overgeared:knappable_rock",
+     "texture": "minecraft:textures/block/glass.png",
+     "sound": "minecraft:block.stone.break"
+   },
+   {
+     "item": "minecraft:bone",
+     "texture": "minecraft:textures/block/bone_block_top.png",
+     "sound": "minecraft:block.bone_block.break"
+   },
+   {
+     "tag": "forge:gems/diamond",
+     "texture": "minecraft:textures/block/diamond_block.png",
+     "sound": "minecraft:item.tool.pickaxe.strip"
+   }
+ ]
+}
+overgeared/rock_interactions/ 
+(for right clicking whatever items on whatever blocks to drop whatever items)
+[
+ {
+   "input_block": "minecraft:stone",
+   "result_block": "minecraft:cobblestone",
+   "tools": [
+     {
+       "item": "minecraft:flint",
+       "drop_item": "overgeared:knappable_rock",
+       "drop_chance": 0.30,
+       "break_chance": 0.10
+     }
+   ]
+ },
+ {
+   "input_block": "minecraft:stone",
+   "result_block": "minecraft:stone_bricks",
+   "tools": [
+     {
+       "item": "minecraft:iron_pickaxe",
+       "drop_item": "overgeared:knappable_rock",
+       "drop_chance": 0.15,
+       "break_chance": 0.05
+     }
+   ]
+ },
+ {
+   "input_block": "minecraft:andesite",
+   "result_block": "minecraft:cobbled_andesite",
+   "tools": [
+     {
+       "item": "minecraft:diamond_pickaxe",
+       "drop_item": "overgeared:knappable_rock",
+       "drop_chance": 0.20,
+       "break_chance": 0.15
+     }
+   ]
+ }
+]
+
+
+overgeared/quality_attributes/
+{
+ "attribute": "minecraft:generic.attack_damage",
+ "targets": [
+   {
+     "type": "weapon"
+   },
+   {
+     "type": "item_tag",
+     "id": "minecraft:swords"
+   },
+   {
+     "type": "item",
+     "id": "minecraft:diamond_sword"
+   }
+ ],
+ "qualities": {
+   "poor": {
+     "operation": "add",
+     "amount": -1.0
+   },
+   "well": {
+     "operation": "add",
+     "amount": 0.0
+   },
+   "expert": {
+     "operation": "add",
+     "amount": 1.5
+   },
+   "perfect": {
+     "operation": "add",
+     "amount": 2.0
+   },
+   "master": {
+     "operation": "add",
+     "amount": 3.0
+   }
+ }
+}
+Attribute
+minecraft:generic.attack_damage
+minecraft:generic.attack_speed
+minecraft:generic.armor
+minecraft:generic.armor_toughness
+minecraft:generic.max_health
+minecraft:generic.knockback_resistance
+minecraft:generic.movement_speed
+minecraft:generic.luck
+(Any modded attribute works too.)
+Target types
+item     → exact item ID
+item_tag → item tag (forge:..., minecraft:...)
+weapon   → any weapon
+armor    → any armor
+item_all → any item
+Operations
+JSON value
+	Effect
+	add
+	Flat addition
+	mult_base
+	Multiplies base value
+	mult_total
+	Multiplies final value
+	
+
+Item Tags
+overgeared:knappables
+If an item can be knapped
+overgeared:heated_metals
+Constantly hurt the player when held, needing tongs to handle. Will cool down into another item that was defined in overgeared:cooling recipes.
+overgeared:hot_items
+Same effect as heated_metals but with different tooltips. Cannot be cooled down into another item.
+overgeared:smithing_hammers
+For modpack developers to add their own tiered hammers
+overgeared:tongs
+For modpack developers to add custom items with the tongs behavior
+overgeared:tool_parts
+For categorizing tool parts
+Block Tags
+overgeared:needs_copper_tool
+overgeared:needs_steel_tool
+overgeared:smithing_anvil
+For modpack developers to add their own tiered anvils
+overgeared:grindstones
+What block can be used for grinding items
+stone_anvil_bases
+What block can be turned into Stone Smithing Anvil
+iron_anvil_bases
+What block can be turned into Iron Smithing Anvil
+tier_a_anvil_bases
+What block can be turned into Tier A Smithing Anvil
+tier_b_anvil_bases
+What block can be turned into Tier B Smithing Anvil
+Anvil Tiers
+stone
+Primitive anvil, accepts copper.
+iron
+Main anvil used in Overgeared, accepts iron and steel.
+above_a
+For modpack developers, it accepts anything higher than steel.
+above_b
+For modpack developers, it accepts anything higher than above_a.
+
+
+Blueprint Settings
+To add a custom blueprint type: add it to availableToolTypes in common config, then define its display name in your lang file.
+For example: custom tool type is ARMOR, so you need to put "tooltype.overgeared.armor": "Armor" in the lang file.
+It was done like this to allow people to create translations for the tool types without hardcoding the name like past versions.
