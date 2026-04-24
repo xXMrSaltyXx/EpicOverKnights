@@ -1,0 +1,22 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 9,
+  "has_quality": true,
+  "key": {
+    "P": { "item": "overgeared:steel_plate" },
+    "H": { "item": "magistuarmory:halfarmor_chestplate" },
+    "S": { "item": "magistuarmory:small_steel_plate" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "P P",
+    "PHP",
+    "SPS"
+  ],
+  "result": {
+    "item": "magistuarmory:kastenbrust_chestplate"
+  },
+  "show_notification": true
+}

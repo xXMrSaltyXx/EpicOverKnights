@@ -1,0 +1,21 @@
+{
+  "type": "overgeared:forging",
+  "category": "armor",
+  "hammering": 11,
+  "has_quality": true,
+  "key": {
+    "P": { "item": "overgeared:steel_plate" },
+    "S": { "item": "magistuarmory:small_steel_plate" }
+  },
+  "need_quenching": true,
+  "needs_minigame": true,
+  "pattern": [
+    "PPP",
+    "PSP",
+    "PSP"
+  ],
+  "result": {
+    "item": "magistuarmory:kastenbrust_leggings"
+  },
+  "show_notification": true
+}
