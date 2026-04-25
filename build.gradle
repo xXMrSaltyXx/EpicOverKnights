@@ -147,9 +147,9 @@ dependencies {
     runtimeOnly fg.deobf("maven.modrinth:architectury-api:9.2.14+forge")
     runtimeOnly fg.deobf("maven.modrinth:cloth-config:11.1.136+forge")
     // Comment out when doing DataGen
-    runtimeOnly fg.deobf("maven.modrinth:epic-knights-shields-armor-and-weapons:10.11")
+    runtimeOnly fg.deobf("maven.modrinth:epic-knights-shields-armor-and-weapons:2kK9qUpx")
 
-    runtimeOnly fg.deobf("maven.modrinth:overgeared:1.20.1-1.6.27")
+    runtimeOnly fg.deobf("maven.modrinth:overgeared:1.20.1-1.6.28")
 
     runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218")
 
