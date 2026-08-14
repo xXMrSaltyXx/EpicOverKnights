@@ -79,8 +79,8 @@ sourceSets.main.resources {
 
 dependencies {
     // Overgeared — compile (builder API) + runtime. Production (SRG) jars; mod* configs remap to official.
-    modCompileOnly "maven.modrinth:overgeared:1.20.1-1.6.29"
-    modRuntimeOnly "maven.modrinth:overgeared:1.20.1-1.6.29"
+    modCompileOnly "maven.modrinth:overgeared:1.20.1-1.6.32"
+    modRuntimeOnly "maven.modrinth:overgeared:1.20.1-1.6.32"
 
     // Epic Knights — runtime only, local jar with the DataGen fix (see BACKPORT.md §4).
     // mod* config remaps it SRG->official, like the Modrinth deps.
@@ -90,7 +90,7 @@ dependencies {
     modRuntimeOnly "maven.modrinth:architectury-api:9.2.14+forge"
     modRuntimeOnly "maven.modrinth:cloth-config:11.1.136+forge"
     modRuntimeOnly "maven.modrinth:jei:p7yZWpEg"
-    modRuntimeOnly "maven.modrinth:jade:11.13.2+forge"
+    modRuntimeOnly "maven.modrinth:jade:11.13.3+forge"
 }
 
 // Expand placeholders in the Forge metadata only; keep the NeoForge file out of this jar.

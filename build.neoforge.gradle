@@ -84,8 +84,8 @@ configurations { runtimeClasspath.extendsFrom localRuntime }
 
 dependencies {
     // Overgeared — compile (builder API) + runtime. 1.21.1 mods are in official mappings (no remap).
-    compileOnly "maven.modrinth:overgeared:rBaLtSNX"
-    localRuntime "maven.modrinth:overgeared:rBaLtSNX"
+    compileOnly "maven.modrinth:overgeared:otsHkv1p"
+    localRuntime "maven.modrinth:overgeared:otsHkv1p"
 
     // Epic Knights — runtime only, local jar with the DataGen fix (1.21.1 jars are official-mapped).
     localRuntime "local:epic-knights-neoforge:10.12"
