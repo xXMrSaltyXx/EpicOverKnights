@@ -40,11 +40,3 @@ description='''${mod_description}'''
     versionRange="[1.6.29,)"
     ordering="AFTER"
     side="BOTH"
-
-# Optional — Epic Knights: Addon. See EPIC_KNIGHTS_ADDON_INTEGRATION.md.
-[[dependencies.${mod_id}]]
-    modId="magistuarmoryaddon"
-    mandatory=false
-    versionRange="[2.6,)"
-    ordering="AFTER"
-    side="BOTH"

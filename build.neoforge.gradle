@@ -90,11 +90,6 @@ dependencies {
     // Epic Knights — runtime only, local jar with the DataGen fix (1.21.1 jars are official-mapped).
     localRuntime "local:epic-knights-neoforge:10.12"
 
-    // Epic Knights: Addon — optional runtime dep (see EPIC_KNIGHTS_ADDON_INTEGRATION.md).
-    // Pinned by Modrinth version ID, not version number — "2.5" is ambiguous (shared by the
-    // neoforge and fabric builds for 1.21.1).
-    localRuntime "maven.modrinth:epic-knights-addon:ZLkRGFj6"
-
     // Runtime deps + dev tooling.
     localRuntime "maven.modrinth:architectury-api:ZxYGwlk0"
     localRuntime "maven.modrinth:cloth-config:izKINKFg"
