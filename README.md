@@ -44,7 +44,7 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 </details>
 
 ## Compatibility
-This mod supports the base Epic Knights mod only. Add-ons are not supported and not planned.
+Core mods maintained | Addon development open for contributions
 
 | DLC | Status |
 |-----|--------|
