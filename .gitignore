@@ -47,3 +47,6 @@ desktop.ini
 
 # Python tooling
 __pycache__/
+
+# temporary texture review folder
+/texture_review/

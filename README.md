@@ -96,8 +96,10 @@ Parts of this mod's JSON generation were assisted by Claude Code to handle the r
 
 Blade textures and recipes are derived, not hand-made per material:
 
-- `tools/textures/extract_blade.py` cuts the blade/head master (`steel_<weapon>_blade.png`) out of an
-  Epic Knights weapon texture (handle detection by colour, per-weapon overrides in `blade_masks.json`).
+- `tools/textures/extract_blade.py` cuts a first draft of the blade/head master
+  (`steel_<weapon>_blade.png`) out of an Epic Knights weapon texture (handle detection by colour,
+  per-weapon overrides in `blade_masks.json`). The shipped masters, base and addon, are hand-edited;
+  the script never overwrites an existing file unless asked to with `--force`.
 - `tools/textures/gen_materials.py` derives every other material from the steel master using the
   palette of the Epic Knights originals.
 - `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries; deliberate
