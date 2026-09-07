@@ -170,7 +170,7 @@ public class OvergearedStaticDataProvider implements DataProvider {
             if (type.getMaterials().contains(BladeMaterial.STEEL)) items.add(type.resultId(BladeMaterial.STEEL));
         }
         for (ForgingTable.Entry entry : ForgingTable.of(addon)) {
-            if (entry.blueprint() != null) items.add(entry.result());
+            if (entry.blueprint() != null && entry.usesSteel()) items.add(entry.result());
         }
         for (ForgingTable.AssemblyOnly a : ForgingTable.assemblyOnly(addon)) {
             items.add(a.result().replace("{mat}", "steel"));
