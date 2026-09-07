@@ -322,20 +322,21 @@ def main():
     # A piece may build on a base we forge; bases from this very table are found by iterating.
     with open(args.forging_table, encoding="utf-8") as f:
         forged = set(re.findall(r'\barmor\("(\w+)"', f.read())) | ASSEMBLED_BASE
-    pending = {**{n: recipes[n] for n in sorted(DIRECT)}, **others}
+    # keyed by recipe file name: the addon has both steel_puff_and_slash_boots and a cloth puff_and_slash_boots
+    pending = {**{"steel_" + n: (n, recipes[n]) for n in sorted(DIRECT)}, **{n: (n, r) for n, r in others.items()}}
     rows, skipped = [], {}
     while pending:
         progress = False
-        for name, r in list(pending.items()):
+        for key, (name, r) in list(pending.items()):
             d, why = derive_armor(name, r, lang, forged)
             if d:
                 rows.append(d)
                 forged.add(d["item"])
-                del pending[name]
-                skipped.pop(name, None)
+                del pending[key]
+                skipped.pop(key, None)
                 progress = True
             else:
-                skipped[name] = why
+                skipped[key] = why
         if not progress:
             break
     forge_rows = [java_row(d) for d in rows if d["kind"] == "forge"]

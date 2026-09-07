@@ -149,6 +149,8 @@ public final class ForgingTable {
         //    everything with stock metal to hammer, forged 1:1 in the addon's grid (loose parts fitted) ──
         addon("mustache_decoration", "Mustache Decoration", "misc", 5, "magistuarmoryaddon:steel_mustache_decoration",
                 p("N N", " N ", "   "), k('N', STEEL_NUGGET));
+        addon("puff_and_slash_boots", "Puff And Slash Boots", "armor", 10, "magistuarmoryaddon:steel_puff_and_slash_boots",
+                p("NNN", "INI", "P P"), k('N', STEEL_NUGGET), k('I', HEATED_STEEL), k('P', STEEL_PLATE));
         addon("puff_and_slash_chestplate", "Puff And Slash Chestplate", "armor", 11, "magistuarmoryaddon:steel_puff_and_slash_chestplate",
                 p("NNN", "IBI", "INI"), k('N', STEEL_NUGGET), k('I', HEATED_STEEL), k('B', "item:magistuarmory:halfarmor_chestplate"));
         addon("skirt_decoration", "Skirt Decoration", "misc", 9, "magistuarmoryaddon:steel_skirt_decoration",
