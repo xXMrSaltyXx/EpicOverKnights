@@ -43,6 +43,19 @@ HANDLE = {
 }
 # Base-mod counterparts: zweihander (3 ingots + shortsword blade) is hammering 6.
 HAMMERING_OVERRIDES = {"german_greatsword": 6}
+# Overgeared matches the 3x3 forging grid exactly (no shifting, no mirroring), so two blades
+# with the same metal layout collide once the handle cells are gone. Resolved like the base
+# mod does it: smallest plausible deviation from the original shape (tools/check_conflicts.py).
+PATTERN_OVERRIDES = {
+    "grand_falchion": [" II", "II ", "I  "],   # heavier than the cavalry saber: one more ingot along the blade
+    "battleaxe":      ["II ", "II ", "   "],   # broad double-bit head; war_axe and lochaberaxe keep the L
+    "war_axe":        ["I  ", "II ", "   "],   # one-handed axe: L flipped, blade facing down
+    "war_hammer":     ["I  ", " I ", "   "],   # small head + pick; lucernhammer keeps the pole layout
+    "scythe":         ["III", "  I", "   "],   # long curved blade with tang
+    "bollock_dagger": ["   ", "I  ", "   "],   # single-ingot heads by class: daggers top/left, spears middle
+    "short_spear":    ["   ", "  I", "   "],   #   right, pike keeps the centre, stylet the top right
+    "goedendag":      ["   ", "   ", "  I"],   # spike at the far end of the club
+}
 # Not blades: forged directly into the addon item (see AddonForging table).
 DIRECT = {"mustache_decoration", "skirt_decoration", "puff_and_slash_boots", "puff_and_slash_chestplate"}
 HEAD_WORDS = ("hammer", "mace", "axe", "star", "beak", "goedendag", "fork", "lance", "spear")
@@ -88,6 +101,15 @@ def derive(name, recipe, lang):
             else:
                 raise SystemExit(f"{name}: unknown ingredient {ing}")
         forge_rows.append(out)
+    if name in PATTERN_OVERRIDES:
+        forge_rows = PATTERN_OVERRIDES[name]
+        by_letter = {v[0]: v for v in METAL.values()}
+        cells = [c for row in forge_rows for c in row if c != " "]
+        units = sum(by_letter[c][2] for c in cells)
+        weight = sum(by_letter[c][3] for c in cells)
+        metal_cells = len(cells)
+        forge_keys = {c: by_letter[c][1] for c in dict.fromkeys(cells)}
+        ingot_only = all(by_letter[c][1] == "ingot" for c in cells)
     # Recipes that consume a finished shortsword/stylet reuse its hilt; our blade needs one at assembly.
     if not assembly and any(spec.startswith("blade:") for spec in forge_keys.values()):
         assembly.append("tag:magistuarmory:hilts")

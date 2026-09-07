@@ -100,7 +100,11 @@ Blade textures and recipes are derived, not hand-made per material:
   Epic Knights weapon texture (handle detection by colour, per-weapon overrides in `blade_masks.json`).
 - `tools/textures/gen_materials.py` derives every other material from the steel master using the
   palette of the Epic Knights originals.
-- `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries.
+- `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries; deliberate
+  deviations from the original shapes live in its `PATTERN_OVERRIDES`.
+- `tools/check_conflicts.py <generated resources dir>` finds forging grids, assembly ingredient sets,
+  casting recipes or tool types that would collide. Overgeared matches the 3x3 forging grid exactly
+  (no shifting, no mirroring), so two blades may only differ by position — run it after every change.
 - Everything else (items, models, recipes, tool types, blueprints, names, recipe removal) follows
   from `BladeType` and `ForgingTable` at DataGen time: `./gradlew chiseledRunData`.
 

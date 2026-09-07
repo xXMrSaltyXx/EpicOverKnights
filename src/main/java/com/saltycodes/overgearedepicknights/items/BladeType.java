@@ -179,8 +179,8 @@ public enum BladeType {
             .assemble("tag:magistuarmory:hilts")),
     BATTLEAXE(spec("battleaxe", "Battleaxe").addon()
             .part("Head")
-            .cast(27)
-            .forge(5, "II ", "I  ", "   ")
+            .cast(36)
+            .forge(6, "II ", "II ", "   ")
             .key('I', "ingot")
             .assemble("tag:" + Mappings.COMMON + ":rods/wooden", "tag:magistuarmory:poles")),
     BILLHOOK(spec("billhook", "Billhook").addon()
@@ -200,7 +200,7 @@ public enum BladeType {
     BOLLOCK_DAGGER(spec("bollock_dagger", "Bollock Dagger").addon()
             .cast(9)
             .castableType()
-            .forge(3, "   ", " I ", "   ")
+            .forge(3, "   ", "I  ", "   ")
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts")),
     BROADAXE(spec("broadaxe", "Broadaxe").addon()
@@ -306,13 +306,13 @@ public enum BladeType {
             .part("Head")
             .cast(9)
             .castableType()
-            .forge(3, "  I", "   ", "   ")
+            .forge(3, "   ", "   ", "  I")
             .key('I', "ingot")
             .assemble("tag:" + Mappings.COMMON + ":rods/wooden")),
     GRAND_FALCHION(spec("grand_falchion", "Grand Falchion").addon()
             .part("Head")
-            .cast(36)
-            .forge(6, " II", "II ", "   ")
+            .cast(45)
+            .forge(7, " II", "II ", "I  ")
             .key('I', "ingot")
             .assemble("tag:magistuarmory:poles")),
     HAMMER_SPEAR(spec("hammer_spear", "Hammer Spear").addon()
@@ -426,8 +426,8 @@ public enum BladeType {
             .key('N', "item:overgeared:steel_nugget")
             .assemble("tag:magistuarmory:hilts")),
     SCYTHE(spec("scythe", "Scythe").addon()
-            .cast(27)
-            .forge(5, "II ", "  I", "   ")
+            .cast(36)
+            .forge(6, "III", "  I", "   ")
             .key('I', "ingot")
             .assemble("tag:" + Mappings.COMMON + ":rods/wooden")),
     SHORT_SEAX(spec("short_seax", "Short Seax").addon()
@@ -440,7 +440,7 @@ public enum BladeType {
             .part("Head")
             .cast(9)
             .castableType()
-            .forge(3, " I ", "   ", "   ")
+            .forge(3, "   ", "  I", "   ")
             .key('I', "ingot")
             .assemble("tag:magistuarmory:poles")),
     SICKLE(spec("sickle", "Sickle").addon()
@@ -493,13 +493,14 @@ public enum BladeType {
     WAR_AXE(spec("war_axe", "War Axe").addon()
             .part("Head")
             .cast(27)
-            .forge(5, "II ", "I  ", "   ")
+            .forge(5, "I  ", "II ", "   ")
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts", "tag:" + Mappings.COMMON + ":rods/wooden")),
     WAR_HAMMER(spec("war_hammer", "War Hammer").addon()
             .part("Head")
-            .cast(27)
-            .forge(5, "II ", "  I", "   ")
+            .cast(18)
+            .castableType()
+            .forge(4, "I  ", " I ", "   ")
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts", "tag:" + Mappings.COMMON + ":rods/wooden")),
     WELSH_GUISARME(spec("welsh_guisarme", "Welsh Guisarme").addon()
