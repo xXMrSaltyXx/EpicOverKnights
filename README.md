@@ -52,14 +52,8 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 
 **Epic Knights: Addon** is optional. When it is installed, all of its steel weapons get the same
 treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod
-(the glaive, like the ranseur, is assembled straight from a shortsword blade). Its armour and
-decorations follow the same rule as the base mod's: whatever has stock metal to hammer (ingots,
-nuggets, plates) is forged on the anvil in the addon's own grid shape, straps, leather or cloth
-included where the original has them. Whatever is only joined by hand onto a forged piece (mail
-onto a helmet, blaze powder onto knight armour) is assembled in the crafting grid instead, so the
-forging quality carries over. Pieces with nothing to hammer and no forged base (mail with cloth,
-plates tied onto a gambeson), and dyed pieces, keep their crafting recipes. Without the addon
-nothing of that is loaded.
+(the glaive, like the ranseur, is assembled straight from a shortsword blade).
+Without the addon nothing of that is loaded.
 
 | Minecraft Version | Status |
 |-------------------|--------|
@@ -108,9 +102,8 @@ Blade textures and recipes are derived, not hand-made per material:
   the script never overwrites an existing file unless asked to with `--force`.
 - `tools/textures/gen_materials.py` derives every other material from the steel master using the
   palette of the Epic Knights originals.
-- `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries and, with
-  `--table`, into the `ForgingTable` rows for its armour (the classification rule is in the script's
-  docstring); deliberate deviations from the original shapes live in its `PATTERN_OVERRIDES`.
+- `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries; deliberate
+  deviations from the original shapes live in its `PATTERN_OVERRIDES`.
 - `tools/check_conflicts.py <generated resources dir>` finds forging grids, assembly ingredient sets,
   casting recipes or tool types that would collide. Overgeared matches the 3x3 forging grid exactly
   (no shifting, no mirroring), so two blades may only differ by position — run it after every change.
