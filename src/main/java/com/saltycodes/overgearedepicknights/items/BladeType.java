@@ -210,6 +210,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:magistuarmory:poles")),
     CAVALRY_SABER(spec("cavalry_saber", "Cavalry Saber").addon()
+            .result("magistuarmoryaddon:steel_cavalry_sabre")
             .cast(36)
             .forge(6, " II", "II ", "   ")
             .key('I', "ingot")

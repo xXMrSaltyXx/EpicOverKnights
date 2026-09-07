@@ -154,8 +154,12 @@ def derive(name, recipe, lang):
     on_pole = "tag:magistuarmory:poles" in assembly
     part = "Head" if on_pole or any(w in name for w in HEAD_WORDS) else "Blade"
     tooltype = f"ek_{name}" if name in RESERVED_TOOLTYPES else None
+    result = recipe["result"]
+    result = result.get("id") or result.get("item") if isinstance(result, dict) else result
     return {
         "name": name, "display": display, "part": part, "tooltype": tooltype,
+        # the recipe file name and the item id can differ (cavalry_saber -> steel_cavalry_sabre)
+        "result": None if result == f"{ADDON}:steel_{name}" else result,
         "pattern": forge_rows, "keys": forge_keys, "assembly": assembly,
         # casting needs a single metal and at least one ingot's worth of it
         "cast": int(units) if units >= 9 and "G" not in forge_keys and "H" not in forge_keys else 0,
@@ -193,7 +197,9 @@ def derive_armor(name, recipe, lang, steel_prefixed):
                 out += "B"
                 letters["B"] = f'"item:{ing}"'
         rows.append(out)
-    item = f"steel_{name}" if steel_prefixed else name
+    result = recipe["result"]
+    result = result.get("id") or result.get("item") if isinstance(result, dict) else result
+    item = result.split(":", 1)[1]
     display = lang.get(f"item.{ADDON}.{item}") or name.replace("_", " ").title()
     display = re.sub(r"^Steel ", "", display)
     hammering = ARMOR_HAMMERING_OVERRIDES.get(name, max(4, min(11, cells)))
@@ -220,6 +226,8 @@ def java_entry(d):
         parts.append(f'.part("{d["part"]}")')
     if d["tooltype"]:
         parts.append(f'.tooltype("{d["tooltype"]}")')
+    if d["result"]:
+        parts.append(f'.result("{d["result"]}")')
     if d["cast"]:
         parts.append(f'.cast({d["cast"]})')
     if d["castable_type"]:
