@@ -53,12 +53,13 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 **Epic Knights: Addon** is optional. When it is installed, all of its steel weapons get the same
 treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod
 (the glaive, like the ranseur, is assembled straight from a shortsword blade). Its armour and
-decorations follow the base-mod rule as well: every metal piece is forged on the anvil in the
-addon's own grid shape, straps, leather or cloth included where the original has them. A forged
-piece that only gets loose parts added (Proto Maximilian = knight armour + blaze powder) is
-assembled in the crafting grid instead, so its forging quality carries over. Pieces without
-metal, pieces with dye, and pieces built on a base that is not forged (gambeson, chainmail,
-brigandine, lamellar) keep their crafting recipes. Without the addon nothing of that is loaded.
+decorations follow the same rule as the base mod's: whatever has stock metal to hammer (ingots,
+nuggets, plates) is forged on the anvil in the addon's own grid shape, straps, leather or cloth
+included where the original has them. Whatever is only joined by hand onto a forged piece (mail
+onto a helmet, blaze powder onto knight armour) is assembled in the crafting grid instead, so the
+forging quality carries over. Pieces with nothing to hammer and no forged base (mail with cloth,
+plates tied onto a gambeson), and dyed pieces, keep their crafting recipes. Without the addon
+nothing of that is loaded.
 
 | Minecraft Version | Status |
 |-------------------|--------|
