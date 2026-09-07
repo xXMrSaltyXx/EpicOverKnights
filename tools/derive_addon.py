@@ -12,15 +12,21 @@ Usage:
 Prints the BladeType enum entries (paste into BladeType.java, ADDON section)
 and writes the blade-mask config used by tools/textures/extract_blade.py.
 With --table it also writes the ForgingTable rows for the addon's armour and
-decorations: every shaped recipe whose ingredients are all metal (plus at most
-one base piece) is forged 1:1 on the anvil, like the base mod's armour. Pieces
-with cloth, leather, straps, dye or feathers, and pieces built on a base that is
-itself not forged (EXCLUDED_ARMOR), stay vanilla crafting and are listed as
-comments. Values (hammering, casting amount, part names) are heuristics meant
-to be reviewed, not gospel.
+decorations, by the rule the base mod uses for its own armour:
+  * metal (plus at most one base piece, plus straps/leather/cloth/blaze/feathers
+    that are riveted on while hammering) -> forged 1:1 in the addon's grid;
+  * a forged base with only loose parts added (Proto Maximilian = knight boots
+    + blaze powder) -> shapeless Overgeared assembly, so the base's forging
+    quality carries over, like the hussar wings;
+  * a base that is not forged by us (gambeson, chainmail, brigandine,
+    lamellar), no metal at all, or dye/wool/planks -> stays vanilla crafting,
+    listed as a comment with the reason.
+Hammering follows the author's rule: 3 for one occupied slot, +1 per further
+slot. Casting amounts and part names are heuristics meant to be reviewed.
 """
 import argparse
 import json
+import os
 import re
 import sys
 import zipfile
@@ -46,8 +52,12 @@ HANDLE = {
     "#magistuarmory:poles": "tag:magistuarmory:poles",
     "#c:rods/wooden":       "tag:{common}:rods/wooden",
 }
-# Base-mod counterparts: zweihander (3 ingots + shortsword blade) is hammering 6.
-HAMMERING_OVERRIDES = {"german_greatsword": 6}
+# Hammering = 3 + one per occupied slot beyond the first (the author's rule for the base mod).
+def hammering_for(cells):
+    return 2 + max(1, cells)
+
+
+HAMMERING_OVERRIDES = {}
 # Overgeared matches the 3x3 forging grid exactly (no shifting, no mirroring), so two blades
 # with the same metal layout collide once the handle cells are gone. Resolved like the base
 # mod does it: smallest plausible deviation from the original shape (tools/check_conflicts.py).
@@ -64,8 +74,8 @@ PATTERN_OVERRIDES = {
 # Not blades: forged directly into the addon item (ForgingTable rows, see --table).
 DIRECT = {"mustache_decoration", "skirt_decoration", "puff_and_slash_boots", "puff_and_slash_chestplate"}
 
-# Armour / decoration ingredients that may sit in the anvil grid: letter, ForgingTable key spec
-# (a constant name from ForgingTable or a literal "item:"/"tag:" spec).
+# Armour / decoration ingredients that may sit in the anvil grid: letter, ForgingTable constant
+# (or a literal "item:"/"tag:" spec).
 METAL_ARMOR = {
     "#c:ingots/steel":                   ("I", "HEATED_STEEL"),
     "magistuarmory:steel_ingot":         ("I", "HEATED_STEEL"),
@@ -75,23 +85,22 @@ METAL_ARMOR = {
     "#magistuarmory:small_plates/steel": ("S", "SMALL_PLATE"),
     "#magistuarmory:chainmails/steel":   ("C", "CHAINMAIL"),
     "#magistuarmory:rings/steel":        ("R", "STEEL_RING"),
+    "#magistuarmory:lamellar_rows/steel": ("M", "LAMELLAR_ROW"),
     "#c:nuggets/gold":                   ("G", "GOLD_NUGGET"),
     "#c:ingots/gold":                    ("A", "GOLD_INGOT"),
 }
-# Pure-metal pieces built on a base that is not forged by us (cloth, leather, mail, lamellar,
-# brigandine): riveting onto those is needlework in the base mod's convention -> stays crafting.
-EXCLUDED_ARMOR = {
-    "chained_gambeson":               "base gambeson_chestplate is cloth",
-    "chained_gambeson_boots":         "base gambeson_boots is cloth/leather",
-    "xiii_century_knight_boots":      "base chainmail_boots is leather",
-    "xiii_century_knight_leggings":   "base pantyhose is cloth",
-    "xiii_century_knight_chestplate": "base chainmail_chestplate is not forged",
-    "heavy_brigandine_chestplate":    "base brigandine_chestplate is not forged",
-    "mirror_chestplate":              "base lamellar_chestplate is not forged",
-    "chainmail_hood_decoration":      "base chainmail_helmet is not forged",
+# Loose parts riveted onto the metal while hammering; allowed in the grid next to metal and, on
+# their own with a forged base, the ingredients of an assembly.
+SOFT_ARMOR = {
+    "#magistuarmory:leather_strips":     ("L", "LEATHER_STRIP"),
+    "minecraft:leather":                 ("E", "LEATHER"),
+    "#magistuarmory:woolen_fabrics":     ("W", "WOOL_FABRIC"),
+    "minecraft:blaze_powder":            ("Z", "BLAZE_POWDER"),
+    "minecraft:feather":                 ("F", "FEATHER"),
+    "minecraft:leather_boots":           ("O", "LEATHER_BOOTS"),
 }
-# Base armour is hammering 4..11, roughly the number of metal cells; keep the hand-set values.
-ARMOR_HAMMERING_OVERRIDES = {"puff_and_slash_chestplate": 7, "puff_and_slash_boots": 7, "mustache_decoration": 3}
+# Base-mod pieces that carry forging quality without an armor() row (assembled, see the provider).
+ASSEMBLED_BASE = {"wingedhussar_chestplate", "crusader_chestplate"}
 HEAD_WORDS = ("hammer", "mace", "axe", "star", "beak", "goedendag", "fork", "lance", "spear")
 # Overgeared's built-in tool types we must not collide with.
 RESERVED_TOOLTYPES = {"sword", "axe", "pickaxe", "shovel", "hoe", "knife", "fillet_knife", "machete", "cleaver",
@@ -147,7 +156,7 @@ def derive(name, recipe, lang):
     # Recipes that consume a finished shortsword/stylet reuse its hilt; our blade needs one at assembly.
     if not assembly and any(spec.startswith("blade:") for spec in forge_keys.values()):
         assembly.append("tag:magistuarmory:hilts")
-    hammering = HAMMERING_OVERRIDES.get(name, max(3, min(7, 2 + round(weight))))
+    hammering = HAMMERING_OVERRIDES.get(name, hammering_for(metal_cells))
     castable_type = ingot_only and metal_cells <= 2
     display = lang.get(f"item.{ADDON}.steel_{name}") or name.replace("_", " ").title()
     display = re.sub(r"^Steel ", "", display)
@@ -168,53 +177,64 @@ def derive(name, recipe, lang):
     }
 
 
-def derive_armor(name, recipe, lang, steel_prefixed):
-    """ForgingTable row for a pure-metal shaped recipe, or (None, reason) when it stays crafting."""
-    if name in EXCLUDED_ARMOR:
-        return None, EXCLUDED_ARMOR[name]
+def derive_armor(name, recipe, lang, forged):
+    """Classify one shaped addon recipe: a ForgingTable row (kind forge/assembly) or (None, reason)."""
     keys = {k: ingredient_id(v) for k, v in recipe["key"].items()}
-    base = [i for i in set(keys.values()) if i not in METAL_ARMOR and not i.startswith("#")
-            and i.split(":")[0] in ("magistuarmory", ADDON)]
-    soft = sorted(i for i in set(keys.values()) if i not in METAL_ARMOR and i not in base)
-    if soft:
-        return None, "not pure metal: " + ", ".join(soft)
+    ings = set(keys.values())
+    base = sorted(i for i in ings if i not in METAL_ARMOR and i not in SOFT_ARMOR and not i.startswith("#")
+                  and i.split(":")[0] in ("magistuarmory", ADDON))
+    other = sorted(i for i in ings if i not in METAL_ARMOR and i not in SOFT_ARMOR and i not in base)
+    if other:
+        return None, "not forgeable: " + ", ".join(other)
     if len(base) > 1:
         return None, "several base items: " + ", ".join(base)
+    metal = ings & set(METAL_ARMOR)
+    if base and base[0].split(":")[1] not in forged:
+        return None, f"base {base[0]} is not forged"
+    if not metal and not base:
+        return None, "no metal"
+    result = recipe["result"]
+    result = result.get("id") or result.get("item") if isinstance(result, dict) else result
+    item = result.split(":", 1)[1]
+    display = re.sub(r"^Steel ", "", lang.get(f"item.{ADDON}.{item}") or name.replace("_", " ").title())
     pattern = [row.ljust(3) for row in recipe["pattern"]] + ["   "] * (3 - len(recipe["pattern"]))
-    letters, rows, cells = {}, [], 0
+    cells = [keys[ch] for row in pattern for ch in row if ch != " "]
+    if not metal:
+        # forged base + loose parts only: assemble, the base's quality carries over
+        extra = [SOFT_ARMOR[i][1] for i in cells if i in SOFT_ARMOR]
+        return {"kind": "assembly", "name": name, "display": display, "item": item, "result": result,
+                "base": f'"item:{base[0]}"', "extra": extra}, None
+    letters, rows = {}, []
     for row in pattern:
         out = ""
         for ch in row:
             ing = keys.get(ch)
             if ing is None:
                 out += " "
-            elif ing in METAL_ARMOR:
-                letter, spec = METAL_ARMOR[ing]
+            elif ing in METAL_ARMOR or ing in SOFT_ARMOR:
+                letter, spec = (METAL_ARMOR.get(ing) or SOFT_ARMOR[ing])
                 out += letter
                 letters[letter] = spec
-                cells += 1
             else:
                 out += "B"
                 letters["B"] = f'"item:{ing}"'
         rows.append(out)
-    result = recipe["result"]
-    result = result.get("id") or result.get("item") if isinstance(result, dict) else result
-    item = result.split(":", 1)[1]
-    display = lang.get(f"item.{ADDON}.{item}") or name.replace("_", " ").title()
-    display = re.sub(r"^Steel ", "", display)
-    hammering = ARMOR_HAMMERING_OVERRIDES.get(name, max(4, min(11, cells)))
     tooltype = f"ek_{name}" if name in RESERVED_TOOLTYPES else name
-    return {"name": name, "display": display, "item": item, "tooltype": tooltype,
+    return {"kind": "forge", "name": name, "display": display, "item": item, "result": result, "tooltype": tooltype,
             "category": "misc" if "decoration" in name else "armor",
-            "hammering": hammering, "pattern": rows, "keys": letters}, None
+            "hammering": hammering_for(len(cells)), "pattern": rows, "keys": letters}, None
 
 
 def java_row(d):
+    if d["kind"] == "assembly":
+        extra = ", ".join(d["extra"])
+        return (f'        assemble("{d["name"]}", {d["base"]}, "{d["result"]}", {extra});'
+                f'  // {d["display"]}')
     rows = ", ".join(f'"{r}"' for r in d["pattern"])
     keys = ", ".join(f"k('{c}', {spec})" for c, spec in d["keys"].items())
     tooltype = "" if d["tooltype"] == d["name"] else f', "{d["tooltype"]}"'
     return (f'        addon("{d["name"]}", "{d["display"]}", "{d["category"]}", {d["hammering"]}, '
-            f'"{ADDON}:{d["item"]}"{tooltype},\n                p({rows}), {keys});')
+            f'"{d["result"]}"{tooltype},\n                p({rows}), {keys});')
 
 
 def java_entry(d):
@@ -250,6 +270,9 @@ def main():
     ap.add_argument("--java", help="write enum entries here (default: stdout)")
     ap.add_argument("--masks", help="write blade-mask config here")
     ap.add_argument("--table", help="write ForgingTable rows (addon armour/decorations) here")
+    ap.add_argument("--forging-table", default=os.path.join(os.path.dirname(__file__), "..", "src", "main", "java",
+                    "com", "saltycodes", "overgearedepicknights", "datagen", "ForgingTable.java"),
+                    help="ForgingTable.java, read for the base-mod armour we forge (bases an addon piece may build on)")
     args = ap.parse_args()
 
     with zipfile.ZipFile(args.jar) as z:
@@ -288,19 +311,35 @@ def main():
     out += ["", "    // Direct forging (no blade item) — see --table / ForgingTable."]
     text = "\n".join(out) + "\n"
 
-    # ── ForgingTable rows: the four steel_ DIRECT pieces plus every pure-metal armour piece ──
-    rows, skipped = [], []
-    for name in sorted(DIRECT):
-        d, why = derive_armor(name, recipes[name], lang, True)
-        (rows.append(java_row(d)) if d else skipped.append((name, why)))
-    for name, r in others.items():
-        d, why = derive_armor(name, r, lang, False)
-        (rows.append(java_row(d)) if d else skipped.append((name, why)))
-    table = ["        // ── Epic Knights: Addon — pure-metal armour and decorations, generated by",
-             "        //    tools/derive_addon.py --table (grid 1:1 the addon recipe, steel only) ──"]
-    table += rows
-    table += ["", "        // Stays addon crafting (not pure metal, or base not forged by us):"]
-    table += [f"        //   {n}: {why}" for n, why in skipped]
+    # ── ForgingTable rows: the steel_ DIRECT pieces plus every armour piece the rule accepts.
+    # A piece may build on a base we forge; bases from this very table are found by iterating.
+    with open(args.forging_table, encoding="utf-8") as f:
+        forged = set(re.findall(r'\barmor\("(\w+)"', f.read())) | ASSEMBLED_BASE
+    pending = {**{n: recipes[n] for n in sorted(DIRECT)}, **others}
+    rows, skipped = [], {}
+    while pending:
+        progress = False
+        for name, r in list(pending.items()):
+            d, why = derive_armor(name, r, lang, forged)
+            if d:
+                rows.append(d)
+                forged.add(d["item"])
+                del pending[name]
+                skipped.pop(name, None)
+                progress = True
+            else:
+                skipped[name] = why
+        if not progress:
+            break
+    forge_rows = [java_row(d) for d in rows if d["kind"] == "forge"]
+    assemblies = [java_row(d) for d in rows if d["kind"] == "assembly"]
+    table = ["        // ── Epic Knights: Addon — armour and decorations, generated by tools/derive_addon.py --table:",
+             "        //    every metal piece (straps, leather or cloth riveted on) forged 1:1 in the addon's grid ──"]
+    table += forge_rows
+    table += ["", "        // Forged base plus loose parts only: assembled, the base's quality carries over"]
+    table += assemblies
+    table += ["", "        // Everything else in the addon stays vanilla crafting:"]
+    table += [f"        //   {n}: {why}" for n, why in sorted(skipped.items())]
     if args.table:
         with open(args.table, "w", encoding="utf-8") as f:
             f.write("\n".join(table) + "\n")
@@ -318,7 +357,7 @@ def main():
             json.dump(masks, f, indent=2)
             f.write("\n")
     print(f"{len(blades)} blade types, {len(assembly_only)} assembly-only, "
-          f"{len(rows)} forging-table rows, {len(skipped)} left as crafting", file=sys.stderr)
+          f"{len(forge_rows)} forging-table rows, {len(assemblies)} assemblies, {len(skipped)} left as crafting", file=sys.stderr)
 
 
 if __name__ == "__main__":

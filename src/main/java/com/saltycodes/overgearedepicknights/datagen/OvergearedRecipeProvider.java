@@ -51,6 +51,7 @@ public class OvergearedRecipeProvider implements DataProvider {
         generateDirectForging(cache, futures);
         generateAssembly(cache, futures);
         generateAssemblyOnly(cache, futures);
+        generateArmorAssembly(cache, futures);
         generateKnapping(cache, futures);
         generateTooltypes(cache, futures);
         generateBlueprintCrafting(cache, futures);
@@ -179,6 +180,21 @@ public class OvergearedRecipeProvider implements DataProvider {
                 obj.add("result", resultRef(a.result().replace("{mat}", mat.getName())));
                 save(cache, futures, "crafting/" + a.name() + "/" + mat.getName() + "_" + a.name(), obj);
             }
+        }
+    }
+
+    /** Armour from a forged base plus loose parts (ForgingTable.assemblies): the base's quality carries over. */
+    private void generateArmorAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (ForgingTable.Assembly a : ForgingTable.assemblies(addon)) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "overgeared:crafting_shapeless");
+            obj.addProperty("category", "equipment");
+            JsonArray ingredients = new JsonArray();
+            ingredients.add(parseIngredient(a.base()));
+            for (String extra : a.extra()) ingredients.add(parseIngredient(extra));
+            obj.add("ingredients", ingredients);
+            obj.add("result", resultRef(a.result()));
+            save(cache, futures, "crafting/" + a.name(), obj);
         }
     }
 

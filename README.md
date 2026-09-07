@@ -53,10 +53,12 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 **Epic Knights: Addon** is optional. When it is installed, all of its steel weapons get the same
 treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod
 (the glaive, like the ranseur, is assembled straight from a shortsword blade). Its armour and
-decorations follow the base-mod rule as well: every piece made purely of metal is forged on the
-anvil in the addon's own grid shape; pieces with cloth, leather, dye or feathers, and pieces built
-on a base that is not forged (gambeson, chainmail, brigandine, lamellar), keep their crafting
-recipes. Without the addon nothing of that is loaded.
+decorations follow the base-mod rule as well: every metal piece is forged on the anvil in the
+addon's own grid shape, straps, leather or cloth included where the original has them. A forged
+piece that only gets loose parts added (Proto Maximilian = knight armour + blaze powder) is
+assembled in the crafting grid instead, so its forging quality carries over. Pieces without
+metal, pieces with dye, and pieces built on a base that is not forged (gambeson, chainmail,
+brigandine, lamellar) keep their crafting recipes. Without the addon nothing of that is loaded.
 
 | Minecraft Version | Status |
 |-------------------|--------|
@@ -106,8 +108,8 @@ Blade textures and recipes are derived, not hand-made per material:
 - `tools/textures/gen_materials.py` derives every other material from the steel master using the
   palette of the Epic Knights originals.
 - `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries and, with
-  `--table`, into the `ForgingTable` rows for its armour; deliberate deviations from the original
-  shapes live in its `PATTERN_OVERRIDES`, pieces left to crafting in `EXCLUDED_ARMOR`.
+  `--table`, into the `ForgingTable` rows for its armour (the classification rule is in the script's
+  docstring); deliberate deviations from the original shapes live in its `PATTERN_OVERRIDES`.
 - `tools/check_conflicts.py <generated resources dir>` finds forging grids, assembly ingredient sets,
   casting recipes or tool types that would collide. Overgeared matches the 3x3 forging grid exactly
   (no shifting, no mirroring), so two blades may only differ by position — run it after every change.

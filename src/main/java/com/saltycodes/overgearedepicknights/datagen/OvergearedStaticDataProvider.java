@@ -175,6 +175,7 @@ public class OvergearedStaticDataProvider implements DataProvider {
         for (ForgingTable.AssemblyOnly a : ForgingTable.assemblyOnly(addon)) {
             items.add(a.result().replace("{mat}", "steel"));
         }
+        for (ForgingTable.Assembly a : ForgingTable.assemblies(addon)) items.add(a.result());
         if (!addon) items.addAll(List.of(BASE_FORGED_STEEL));
 
         JsonObject obj = new JsonObject();
