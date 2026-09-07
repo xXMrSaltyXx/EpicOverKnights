@@ -51,7 +51,8 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 | [Epic Knights: Addon](https://modrinth.com/mod/epic-knights-addon) | 🟢 Supported (optional) |
 
 **Epic Knights: Addon** is optional. When it is installed, all of its steel weapons get the same
-treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod.
+treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod
+(the glaive, like the ranseur, is assembled straight from a shortsword blade).
 Without the addon nothing of that is loaded.
 
 | Minecraft Version | Status |

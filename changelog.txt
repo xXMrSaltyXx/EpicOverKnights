@@ -4,7 +4,7 @@ Overgeared x Epic Knights Changelog
 1.1.0 (unreleased)
 ------------------
 - Epic Knights: Addon support (optional): forging, casting, assembly, blueprints and
-  tool types for all 56 steel weapons plus the four all-metal pieces; recipes live in a
+  tool types for every addon steel weapon plus the four all-metal pieces; recipes live in a
   built-in datapack that is only enabled when the addon is installed
 - Recipe removal is now rule-based: every Epic Knights recipe whose result we forge is
   dropped automatically

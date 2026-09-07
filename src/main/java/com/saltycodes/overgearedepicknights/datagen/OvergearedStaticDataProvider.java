@@ -141,7 +141,7 @@ public class OvergearedStaticDataProvider implements DataProvider {
 
     private static final String[] BASE_FORGED_STEEL = {
             "magistuarmory:steel_chivalrylance", "magistuarmory:steel_flamebladedsword",
-            "magistuarmory:steel_chainmorgenstern", "magistuarmory:steel_ranseur",
+            "magistuarmory:steel_chainmorgenstern",
             "magistuarmory:barbute","magistuarmory:halfarmor_chestplate","magistuarmory:armet",
             "magistuarmory:knight_chestplate","magistuarmory:knight_leggings","magistuarmory:knight_boots",
             "magistuarmory:sallet","magistuarmory:gothic_chestplate","magistuarmory:gothic_leggings",
@@ -171,6 +171,9 @@ public class OvergearedStaticDataProvider implements DataProvider {
         }
         for (ForgingTable.Entry entry : ForgingTable.of(addon)) {
             if (entry.blueprint() != null) items.add(entry.result());
+        }
+        for (ForgingTable.AssemblyOnly a : ForgingTable.assemblyOnly(addon)) {
+            items.add(a.result().replace("{mat}", "steel"));
         }
         if (!addon) items.addAll(List.of(BASE_FORGED_STEEL));
 

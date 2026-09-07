@@ -184,6 +184,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:" + Mappings.COMMON + ":rods/wooden", "tag:magistuarmory:poles")),
     BILLHOOK(spec("billhook", "Billhook").addon()
+            .part("Head")
             .cast(11)
             .forge(3, "NP ", "  N", "   ")
             .key('N', "item:overgeared:steel_nugget")
@@ -261,6 +262,7 @@ public enum BladeType {
             .key('#', "blade:shortsword")
             .assemble("tag:magistuarmory:hilts")),
     FAUCHARD(spec("fauchard", "Fauchard").addon()
+            .part("Head")
             .cast(19)
             .forge(4, " PN", "  I", "   ")
             .key('P', "item:overgeared:steel_plate")
@@ -282,6 +284,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts", "tag:" + Mappings.COMMON + ":rods/wooden")),
     FRENCH_HALBERD(spec("french_halberd", "French Halberd").addon()
+            .part("Head")
             .cast(19)
             .forge(4, " N ", "P P", "   ")
             .key('N', "item:overgeared:steel_nugget")
@@ -295,15 +298,10 @@ public enum BladeType {
             .assemble("tag:magistuarmory:poles")),
     GERMAN_GREATSWORD(spec("german_greatsword", "German Greatsword").addon()
             .cast(45)
-            .forge(7, " I ", "I#I", "   ")
+            .forge(6, " I ", "I#I", "   ")
             .key('I', "ingot")
             .key('#', "blade:shortsword")
             .assemble("tag:magistuarmory:hilts")),
-    GLAIVE(spec("glaive", "Glaive").addon()
-            .cast(18)
-            .forge(4, "  #", "   ", "   ")
-            .key('#', "blade:shortsword")
-            .assemble("tag:magistuarmory:poles", "tag:" + Mappings.COMMON + ":rods/wooden")),
     GOEDENDAG(spec("goedendag", "Goedendag").addon()
             .part("Head")
             .cast(9)
@@ -312,6 +310,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:" + Mappings.COMMON + ":rods/wooden")),
     GRAND_FALCHION(spec("grand_falchion", "Grand Falchion").addon()
+            .part("Head")
             .cast(36)
             .forge(6, " II", "II ", "   ")
             .key('I', "ingot")
@@ -381,6 +380,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts")),
     PARTISAN(spec("partisan", "Partisan").addon()
+            .part("Head")
             .cast(11)
             .forge(3, "NIN", "   ", "   ")
             .key('N', "item:overgeared:steel_nugget")
@@ -457,6 +457,7 @@ public enum BladeType {
             .key('*', "blade:stylet")
             .assemble("tag:magistuarmory:hilts")),
     SWISS_HALBERD(spec("swiss_halberd", "Swiss Halberd").addon()
+            .part("Head")
             .cast(28)
             .forge(5, "PN ", "P I", "   ")
             .key('P', "item:overgeared:steel_plate")
@@ -483,6 +484,7 @@ public enum BladeType {
             .key('N', "item:overgeared:steel_nugget")
             .assemble("tag:magistuarmory:hilts")),
     VOULGE(spec("voulge", "Voulge").addon()
+            .part("Head")
             .cast(20)
             .forge(4, "PN ", "P N", "   ")
             .key('P', "item:overgeared:steel_plate")
@@ -501,6 +503,7 @@ public enum BladeType {
             .key('I', "ingot")
             .assemble("tag:magistuarmory:hilts", "tag:" + Mappings.COMMON + ":rods/wooden")),
     WELSH_GUISARME(spec("welsh_guisarme", "Welsh Guisarme").addon()
+            .part("Head")
             .cast(20)
             .forge(4, " IN", "I N", "   ")
             .key('I', "ingot")

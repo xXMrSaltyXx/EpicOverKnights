@@ -50,13 +50,13 @@ public class OvergearedRecipeProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         generateDirectForging(cache, futures);
         generateAssembly(cache, futures);
+        generateAssemblyOnly(cache, futures);
         generateKnapping(cache, futures);
         generateTooltypes(cache, futures);
         generateBlueprintCrafting(cache, futures);
         generateToolCastPlaceholders(cache, futures);
         if (!addon) {
             generateChainmorgensternAssembly(cache, futures);
-            generateRanseurAssembly(cache, futures);
             generateSpecialCrafting(cache, futures);
             generateSmithing(cache, futures);
             generateBlasting(cache, futures);
@@ -164,17 +164,21 @@ public class OvergearedRecipeProvider implements DataProvider {
         }
     }
 
-    private void generateRanseurAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        for (BladeMaterial mat : BladeMaterial.values()) {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "overgeared:crafting_shapeless");
-            obj.addProperty("category", "equipment");
-            JsonArray ingredients = new JsonArray();
-            ingredients.add(itemRef(BladeType.SHORTSWORD.itemId(mat)));
-            ingredients.add(itemRef("magistuarmory:pole"));
-            obj.add("ingredients", ingredients);
-            obj.add("result", resultRef("magistuarmory:" + mat.getName() + "_ranseur"));
-            save(cache, futures, "crafting/ranseur/" + mat.getName() + "_ranseur", obj);
+    /** Weapons without a blade item of their own: another blade plus handle parts (ranseur, glaive). */
+    private void generateAssemblyOnly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (ForgingTable.AssemblyOnly a : ForgingTable.assemblyOnly(addon)) {
+            Iterable<BladeMaterial> materials = addon ? List.of(BladeMaterial.STEEL) : a.blade().getMaterials();
+            for (BladeMaterial mat : materials) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("type", "overgeared:crafting_shapeless");
+                obj.addProperty("category", "equipment");
+                JsonArray ingredients = new JsonArray();
+                ingredients.add(itemRef(a.blade().itemId(mat)));
+                for (String extra : a.extra()) ingredients.add(parseIngredient(extra));
+                obj.add("ingredients", ingredients);
+                obj.add("result", resultRef(a.result().replace("{mat}", mat.getName())));
+                save(cache, futures, "crafting/" + a.name() + "/" + mat.getName() + "_" + a.name(), obj);
+            }
         }
     }
 

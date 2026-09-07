@@ -1,5 +1,8 @@
 package com.saltycodes.overgearedepicknights.datagen;
 
+import com.saltycodes.overgearedepicknights.Mappings;
+import com.saltycodes.overgearedepicknights.items.BladeType;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +40,27 @@ public final class ForgingTable {
         SHIELDS.put("roundshield", "Round Shield");
         SHIELDS.put("tartsche", "Tartsche");
         SHIELDS.put("target", "Target Shield");
+    }
+
+    /**
+     * Weapons assembled straight from another blade, without a blade item of their own —
+     * Epic Knights' ranseur is a shortsword blade on a pole, the addon's glaive likewise.
+     * {@code result} uses {@code {mat}} for the material; addon rows are steel only.
+     */
+    public record AssemblyOnly(String name, BladeType blade, String[] extra, String result, boolean addon) {}
+
+    public static final List<AssemblyOnly> ASSEMBLY_ONLY = List.of(
+            new AssemblyOnly("ranseur", BladeType.SHORTSWORD,
+                    new String[]{"item:magistuarmory:pole"}, "magistuarmory:{mat}_ranseur", false),
+            new AssemblyOnly("glaive", BladeType.SHORTSWORD,
+                    new String[]{"tag:magistuarmory:poles", "tag:" + Mappings.COMMON + ":rods/wooden"},
+                    "magistuarmoryaddon:{mat}_glaive", true)
+    );
+
+    public static List<AssemblyOnly> assemblyOnly(boolean addon) {
+        List<AssemblyOnly> out = new ArrayList<>();
+        for (AssemblyOnly a : ASSEMBLY_ONLY) if (a.addon() == addon) out.add(a);
+        return out;
     }
 
     private static final List<Entry> ENTRIES = new ArrayList<>();
