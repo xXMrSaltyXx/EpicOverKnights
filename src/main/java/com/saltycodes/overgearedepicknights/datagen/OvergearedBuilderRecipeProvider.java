@@ -9,48 +9,53 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.stirdrem.overgeared.datagen.CastingRecipeBuilder;
+import net.stirdrem.overgeared.datagen.ShapedForgingRecipeBuilder;
+import net.stirdrem.overgeared.datagen.ToolCastBlastingRecipeBuilder;
+import net.stirdrem.overgeared.datagen.ToolCastSmeltingRecipeBuilder;
+import net.stirdrem.overgeared.client.ForgingBookCategory;
+import net.stirdrem.overgeared.AnvilTier;
+import net.stirdrem.overgeared.ForgingQuality;
 //? if forge {
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.function.Consumer;
 //?} else {
 /*import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-*///?}
-import net.stirdrem.overgeared.AnvilTier;
-import net.stirdrem.overgeared.ForgingQuality;
-import net.stirdrem.overgeared.client.ForgingBookCategory;
-import net.stirdrem.overgeared.datagen.CastingRecipeBuilder;
-import net.stirdrem.overgeared.datagen.ShapedForgingRecipeBuilder;
-import net.stirdrem.overgeared.datagen.ToolCastBlastingRecipeBuilder;
-import net.stirdrem.overgeared.datagen.ToolCastSmeltingRecipeBuilder;
 
-//? if forge {
-import java.util.function.Consumer;
-//?} else {
-/*import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 *///?}
 
-// Builder-based recipes: casting, SIMPLE/COMPOUND forging, plate forging.
-// Everything else is in OvergearedRecipeProvider.
+import java.util.Locale;
+import java.util.Map;
+
+// Builder-based recipes: casting, blade forging, plate forging.
+// Everything else is in OvergearedRecipeProvider. With addon=true only the Epic Knights: Addon
+// blades are written (into the addon datapack, under the addon/ recipe path).
 public class OvergearedBuilderRecipeProvider extends RecipeProvider {
 
     private final String modId;
+    private final boolean addon;
 
     //? if forge {
-    public OvergearedBuilderRecipeProvider(PackOutput output, String modId) {
+    public OvergearedBuilderRecipeProvider(PackOutput output, String modId, boolean addon) {
         super(output);
         this.modId = modId;
+        this.addon = addon;
     }
     //?} else {
     /*public OvergearedBuilderRecipeProvider(PackOutput output,
                                            CompletableFuture<HolderLookup.Provider> lookupProvider,
-                                           String modId) {
+                                           String modId, boolean addon) {
         super(output, lookupProvider);
         this.modId = modId;
+        this.addon = addon;
     }
     *///?}
 
@@ -62,8 +67,10 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
     *///?}
         buildCasting(output);
         buildForging(output);
-        buildPlateForging(output);
+        if (!addon) buildPlateForging(output);
     }
+
+    private String prefix() { return addon ? "addon/" : ""; }
 
     // ── Casting ──────────────────────────────────────────────────────────────
 
@@ -72,7 +79,7 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
     //?} else {
     /*private void buildCasting(RecipeOutput output) {
     *///?}
-        for (BladeType type : BladeType.values()) {
+        for (BladeType type : BladeType.of(addon)) {
             if (!type.hasCasting()) continue;
             for (BladeMaterial mat : type.getMaterials()) {
                 if (!mat.hasCasting()) continue;
@@ -83,24 +90,24 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
                 *///?}
                 String ts     = type.getName() + type.getSuffix();
                 String prefix = mat.getName() + "_" + ts;
-                ResourceLocation base = rl("casting/" + ts + "/" + prefix);
+                ResourceLocation base = rl(prefix() + "casting/" + ts + "/" + prefix);
 
                 CastingRecipeBuilder.casting(blade, mat.getCastingXp(), 150)
-                        .toolType(type.getName())
+                        .toolType(type.getTooltype())
                         .material(mat.getName(), type.getCastingAmount())
                         .needsPolishing(true)
                         .unlockedBy("has_blade", hasItem(blade))
                         .save(output, base);
 
                 ToolCastSmeltingRecipeBuilder.cast(blade, mat.getCastingXp(), 150)
-                        .toolType(type.getName())
+                        .toolType(type.getTooltype())
                         .material(mat.getName(), type.getCastingAmount())
                         .needsPolishing(true)
                         .unlockedBy("has_blade", hasItem(blade))
                         .save(output, base);
 
                 ToolCastBlastingRecipeBuilder.cast(blade, mat.getCastingXp(), 150)
-                        .toolType(type.getName())
+                        .toolType(type.getTooltype())
                         .material(mat.getName(), type.getCastingAmount())
                         .needsPolishing(true)
                         .unlockedBy("has_blade", hasItem(blade))
@@ -116,10 +123,9 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
     //?} else {
     /*private void buildForging(RecipeOutput output) {
     *///?}
-        for (BladeType type : BladeType.values()) {
-            if (type.getForgeMode() == BladeType.ForgeMode.HARDCODED) continue;
+        for (BladeType type : BladeType.of(addon)) {
             for (BladeMaterial mat : type.getMaterials()) {
-                if (mat == BladeMaterial.STONE) continue;
+                if (mat == BladeMaterial.STONE) continue;   // stone blades are knapped, not forged
                 //? if forge {
                 Item      blade = ModItems.getBlade(type, mat).get();
                 //?} else {
@@ -131,7 +137,7 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
 
                 var b = ShapedForgingRecipeBuilder.shaped(ForgingBookCategory.MISC, blade, type.getForgeHammering())
                         .tier(tier)
-                        .setBlueprint(type.getName())
+                        .setBlueprint(type.getTooltype())
                         .requiresBlueprint(false)
                         .setQuality(true)
                         .minimumQuality(ForgingQuality.POOR)
@@ -142,25 +148,38 @@ public class OvergearedBuilderRecipeProvider extends RecipeProvider {
 
                 for (String row : type.getForgePattern()) b.pattern(row);
 
-                if (type.getForgeMode() == BladeType.ForgeMode.SIMPLE) {
-                    if (mat.isForgingItem()) {
-                        // heated item (e.g. overgeared:heated_iron_ingot)
-                        b.define('#', fromId(mat.getForgingIngredient()));
-                    } else {
-                        // common-tag ingot (e.g. forge:/c: ingots/bronze)
-                        b.define('#', ItemTags.create(ResourceLocation.parse(mat.getForgingIngredient())));
-                    }
-                } else { // COMPOUND: I = ingot tag, # = same-material shortsword blade
-                    b.define('I', ItemTags.create(ResourceLocation.parse(Mappings.COMMON + ":ingots/" + mat.getName())));
-                    //? if forge {
-                    b.define('#', ModItems.getBlade(BladeType.SHORTSWORD, mat).get());
-                    //?} else {
-                    /*b.define('#', ModItems.getBlade(BladeType.SHORTSWORD, mat));
-                    *///?}
+                for (Map.Entry<Character, String> key : type.getForgeKeys().entrySet()) {
+                    defineKey(b, key.getKey(), key.getValue(), mat);
                 }
 
-                b.save(output, rl("forging/" + ts + "/" + name));
+                b.save(output, rl(prefix() + "forging/" + ts + "/" + name));
             }
+        }
+    }
+
+    /** Resolves a BladeType key spec (see its class comment) for one material. */
+    private static void defineKey(ShapedForgingRecipeBuilder b, char c, String spec, BladeMaterial mat) {
+        if (spec.equals("ingot")) {
+            if (mat.isForgingItem()) {
+                b.define(c, fromId(mat.getForgingIngredient()));          // heated ingot item
+            } else {
+                b.define(c, ItemTags.create(ResourceLocation.parse(mat.getForgingIngredient())));   // common ingot tag
+            }
+        } else if (spec.equals("ingot_tag")) {
+            b.define(c, ItemTags.create(ResourceLocation.parse(Mappings.COMMON + ":ingots/" + mat.getName())));
+        } else if (spec.startsWith("blade:")) {
+            BladeType other = BladeType.valueOf(spec.substring("blade:".length()).toUpperCase(Locale.ROOT));
+            //? if forge {
+            b.define(c, ModItems.getBlade(other, mat).get());
+            //?} else {
+            /*b.define(c, ModItems.getBlade(other, mat));
+            *///?}
+        } else if (spec.startsWith("item:")) {
+            b.define(c, fromId(spec.substring("item:".length())));
+        } else if (spec.startsWith("tag:")) {
+            b.define(c, ItemTags.create(ResourceLocation.parse(spec.substring("tag:".length()))));
+        } else {
+            throw new IllegalArgumentException("Unknown forging key spec: " + spec);
         }
     }
 

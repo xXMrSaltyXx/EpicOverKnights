@@ -1,0 +1,175 @@
+{
+  "_comment": "per-weapon overrides for tools/textures/extract_blade.py; mode derived from the recipe's handle",
+  "arming_sword_type_xiii": {
+    "mode": "hilt"
+  },
+  "arming_sword_type_xiv": {
+    "mode": "hilt"
+  },
+  "arming_sword_type_xv": {
+    "mode": "hilt"
+  },
+  "bar_mace": {
+    "mode": "pole",
+    "axis_cut": 2
+  },
+  "battleaxe": {
+    "mode": "pole"
+  },
+  "billhook": {
+    "mode": "pole"
+  },
+  "boar_spear": {
+    "mode": "pole"
+  },
+  "bollock_dagger": {
+    "mode": "hilt"
+  },
+  "broadaxe": {
+    "mode": "pole"
+  },
+  "cavalry_saber": {
+    "mode": "hilt",
+    "source": "steel_cavalry_sabre"
+  },
+  "crow_beak": {
+    "mode": "hilt"
+  },
+  "cutlass": {
+    "mode": "hilt"
+  },
+  "dagger": {
+    "mode": "hilt"
+  },
+  "daneaxe": {
+    "mode": "pole"
+  },
+  "english_poleaxe": {
+    "mode": "pole"
+  },
+  "executioners_sword": {
+    "mode": "hilt"
+  },
+  "falchion": {
+    "mode": "hilt"
+  },
+  "fauchard": {
+    "mode": "pole"
+  },
+  "feder": {
+    "mode": "hilt"
+  },
+  "francisca_axe": {
+    "mode": "hilt"
+  },
+  "french_halberd": {
+    "mode": "pole"
+  },
+  "gallowglass_axe": {
+    "mode": "pole"
+  },
+  "german_greatsword": {
+    "mode": "hilt"
+  },
+  "glaive": {
+    "mode": "pole"
+  },
+  "goedendag": {
+    "mode": "pole"
+  },
+  "grand_falchion": {
+    "mode": "pole"
+  },
+  "hammer_spear": {
+    "mode": "pole"
+  },
+  "italian_poleaxe": {
+    "mode": "pole"
+  },
+  "king_sword": {
+    "mode": "hilt"
+  },
+  "lance": {
+    "mode": "pole"
+  },
+  "long_seax": {
+    "mode": "hilt"
+  },
+  "longsword": {
+    "mode": "hilt"
+  },
+  "maciejowski_messer": {
+    "mode": "hilt"
+  },
+  "messer_sword": {
+    "mode": "hilt"
+  },
+  "military_fork": {
+    "mode": "pole"
+  },
+  "parrying_dagger": {
+    "mode": "hilt",
+    "guard_cut": 4
+  },
+  "partisan": {
+    "mode": "pole"
+  },
+  "rapier": {
+    "mode": "hilt"
+  },
+  "rondel_dagger": {
+    "mode": "hilt"
+  },
+  "round_mace": {
+    "mode": "hilt"
+  },
+  "sabre": {
+    "mode": "hilt"
+  },
+  "saxon_sword": {
+    "mode": "hilt"
+  },
+  "scimitar": {
+    "mode": "hilt"
+  },
+  "scythe": {
+    "mode": "pole"
+  },
+  "short_seax": {
+    "mode": "hilt"
+  },
+  "short_spear": {
+    "mode": "pole"
+  },
+  "sickle": {
+    "mode": "hilt"
+  },
+  "sidesword": {
+    "mode": "hilt",
+    "guard_cut": 3
+  },
+  "swiss_halberd": {
+    "mode": "pole"
+  },
+  "swordbreaker": {
+    "mode": "hilt"
+  },
+  "two_handed_evening_star": {
+    "mode": "pole"
+  },
+  "two_handed_messer": {
+    "mode": "hilt"
+  },
+  "voulge": {
+    "mode": "pole"
+  },
+  "war_axe": {
+    "mode": "hilt"
+  },
+  "war_hammer": {
+    "mode": "hilt"
+  },
+  "welsh_guisarme": {
+    "mode": "pole"
+  }
+}

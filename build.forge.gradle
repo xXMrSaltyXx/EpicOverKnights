@@ -86,6 +86,11 @@ dependencies {
     // mod* config remaps it SRG->official, like the Modrinth deps.
     modRuntimeOnly "local:epic-knights-forge:10.11"
 
+    // Epic Knights: Addon — optional at runtime, but needed on the DataGen classpath so the
+    // addon blades and their datapack are generated. Pinned by Modrinth version id ("2.6"
+    // is shared by the forge and fabric builds).
+    modRuntimeOnly "maven.modrinth:epic-knights-addon:xnYQSIH7"
+
     // Runtime deps (mods Overgeared/EK rely on, plus dev-time tooling).
     modRuntimeOnly "maven.modrinth:architectury-api:9.2.14+forge"
     modRuntimeOnly "maven.modrinth:cloth-config:11.1.136+forge"

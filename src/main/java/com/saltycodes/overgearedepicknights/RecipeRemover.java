@@ -1,10 +1,13 @@
 package com.saltycodes.overgearedepicknights;
 
-import com.saltycodes.overgearedepicknights.items.BladeMaterial;
+import com.mojang.logging.LogUtils;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 //? if forge {
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,188 +17,92 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 *///?}
+import org.slf4j.Logger;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * Removes the vanilla crafting recipes Epic Knights (and its addon) ship for everything this mod
+ * forges instead. The rule is derived, not listed: any recipe from those mods whose result item is
+ * also the result of one of our recipes is dropped. Adding a blade type or armour recipe therefore
+ * needs no change here. The only hand-kept list covers Epic Knights' own steel ingot/nugget/plate
+ * recipes, which are replaced by Overgeared's steel via tags rather than by a recipe of ours.
+ */
 //? if forge {
 @Mod.EventBusSubscriber(modid = OvergearedEpicKnights.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 //?} else {
 /*@EventBusSubscriber(modid = OvergearedEpicKnights.MODID)
 *///?}
 public class RecipeRemover {
+    private static final Logger LOGGER = LogUtils.getLogger();
 
-    /**
-     * Weapon types from magistuarmory whose recipes should be removed for every external recipe material.
-     * To also remove recipes for a new weapon type, add it here by its magistuarmory name.
-     */
-    private static final String[] MAGISTU_WEAPON_TYPES = {"stylet", "shortsword", "katzbalger", "pike", "ranseur", "ahlspiess", "bastardsword", "estoc", "claymore", "zweihander", "lochaberaxe", "concavehalberd", "heavymace", "heavywarhammer", "lucernhammer", "morgenstern", "chainmorgenstern", "guisarme"};
+    /** Namespaces whose recipes we replace. */
+    private static final Set<String> REPLACED_NAMESPACES = Set.of("magistuarmory", OvergearedEpicKnights.ADDON_MODID);
 
-    /**
-     * Material names used by magistuarmory recipe IDs.
-     * This intentionally includes external materials like diamond without making them local BladeMaterials.
-     */
-    private static final Set<String> MAGISTU_RECIPE_MATERIALS = Stream.concat(
-            Arrays.stream(BladeMaterial.values()).map(BladeMaterial::getName),
-            Stream.of("diamond")
-    ).collect(Collectors.toUnmodifiableSet());
-
-    /**
-     * Extra magistuarmory recipes that are not tied to a material/weapon combination.
-     */
+    /** Epic Knights steel material recipes — superseded by Overgeared steel (see the item tags we generate). */
     private static final Set<ResourceLocation> EXTRA_RECIPES_TO_REMOVE = Set.of(
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "jousting_boots"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "jousting_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "jousting_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "stechhelm"),
             ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_plate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "small_steel_plate"),
             ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_ingot_blasting"),
             ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_ingot_to_steel_nuggets"),
             ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_nuggets_to_steel_ingot"),
             ResourceLocation.fromNamespaceAndPath("magistuarmory", "furnace/steel_ingot_blasting"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "furnace/steel_nugget_blasting"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "blacksmith_hammer"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "barbedclub"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "pitchfork"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "messer_sword"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "heavy_crossbow"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_heatershield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_target"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_buckler"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_rondache"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_tartsche"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_ellipticalshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_roundshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_pavese"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "iron_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "copper_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gold_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "silver_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "tin_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bronze_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "diamond_kiteshield"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "steel_ring"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "barbute"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "halfarmor_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "armet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "knight_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "knight_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "knight_boots"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "sallet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gothic_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gothic_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "gothic_boots"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "kettlehat"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "platemail_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "platemail_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "greathelm"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "crusader_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "crusader_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "norman_helmet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "shishak"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "bascinet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "xivcenturyknight_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "xivcenturyknight_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "wingedhussar_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "cuirassier_helmet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "cuirassier_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "grand_bascinet"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "kastenbrust_chestplate"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "kastenbrust_leggings"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "kastenbrust_boots"),
-            ResourceLocation.fromNamespaceAndPath("magistuarmory", "face_helmet")
+            ResourceLocation.fromNamespaceAndPath("magistuarmory", "furnace/steel_nugget_blasting")
     );
-
-    private static final Set<ResourceLocation> RECIPES_TO_REMOVE = buildRecipesToRemove();
-
-    private static Set<ResourceLocation> buildRecipesToRemove() {
-        Set<ResourceLocation> toRemove = new HashSet<>(EXTRA_RECIPES_TO_REMOVE);
-        for (String weaponType : MAGISTU_WEAPON_TYPES) {
-            for (String material : MAGISTU_RECIPE_MATERIALS) {
-                toRemove.add(ResourceLocation.fromNamespaceAndPath(
-                        "magistuarmory", material + "_" + weaponType));
-            }
-        }
-        return Set.copyOf(toRemove);
-    }
 
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         RecipeManager recipeManager = event.getServer().getRecipeManager();
+        RegistryAccess registries = event.getServer().registryAccess();
+
         //? if forge {
-        Map<ResourceLocation, Recipe<?>> recipes = new HashMap<>();
-        recipeManager.getRecipes().forEach(recipe -> {
-            if (!RECIPES_TO_REMOVE.contains(recipe.getId())) {
-                recipes.put(recipe.getId(), recipe);
-            }
-        });
+        List<Recipe<?>> all = new ArrayList<>(recipeManager.getRecipes());
         //?} else {
-        /*Map<ResourceLocation, RecipeHolder<?>> recipes = new HashMap<>();
-        recipeManager.getRecipes().forEach(holder -> {
-            if (!RECIPES_TO_REMOVE.contains(holder.id())) {
-                recipes.put(holder.id(), holder);
-            }
-        });
+        /*List<RecipeHolder<?>> all = new ArrayList<>(recipeManager.getRecipes());
         *///?}
-        recipeManager.replaceRecipes(recipes.values());
+
+        // Every item one of our recipes produces.
+        Set<Item> replaced = new HashSet<>();
+        for (var entry : all) {
+            if (id(entry).getNamespace().equals(OvergearedEpicKnights.MODID)) {
+                Item result = resultItem(entry, registries);
+                if (result != null) replaced.add(result);
+            }
+        }
+
+        //? if forge {
+        List<Recipe<?>> kept = new ArrayList<>(all.size());
+        //?} else {
+        /*List<RecipeHolder<?>> kept = new ArrayList<>(all.size());
+        *///?}
+        List<ResourceLocation> removed = new ArrayList<>();
+        for (var entry : all) {
+            ResourceLocation id = id(entry);
+            boolean drop = EXTRA_RECIPES_TO_REMOVE.contains(id)
+                    || (REPLACED_NAMESPACES.contains(id.getNamespace())
+                        && replaced.contains(resultItem(entry, registries)));
+            if (drop) removed.add(id); else kept.add(entry);
+        }
+        recipeManager.replaceRecipes(kept);
+        LOGGER.info("Removed {} Epic Knights recipes replaced by Overgeared forging", removed.size());
+        LOGGER.debug("Removed recipes: {}", removed);
     }
+
+    //? if forge {
+    private static ResourceLocation id(Recipe<?> recipe) { return recipe.getId(); }
+
+    private static Item resultItem(Recipe<?> recipe, RegistryAccess registries) {
+        ItemStack stack = recipe.getResultItem(registries);
+        return stack.isEmpty() ? null : stack.getItem();
+    }
+    //?} else {
+    /*private static ResourceLocation id(RecipeHolder<?> holder) { return holder.id(); }
+
+    private static Item resultItem(RecipeHolder<?> holder, RegistryAccess registries) {
+        ItemStack stack = holder.value().getResultItem(registries);
+        return stack.isEmpty() ? null : stack.getItem();
+    }
+    *///?}
 }

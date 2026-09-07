@@ -44,3 +44,6 @@ replay_pid*.log
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Python tooling
+__pycache__/

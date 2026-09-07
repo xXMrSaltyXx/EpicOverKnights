@@ -107,3 +107,11 @@ Overgeared x Epic Knights — adds forging and casting recipes for Epic Knights 
 # stop your mod loading on the server for example.
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"
+
+# Optional — Epic Knights: Addon. Its weapons get Overgeared recipes when it is present.
+[[dependencies.${mod_id}]]
+    modId="magistuarmoryaddon"
+    type="optional"
+    versionRange="[2.5,)"
+    ordering="AFTER"
+    side="BOTH"
