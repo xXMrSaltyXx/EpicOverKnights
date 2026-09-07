@@ -395,7 +395,7 @@ public class OvergearedRecipeProvider implements DataProvider {
     // ── Chivalry lance ────────────────────────────────────────────────────────
 
     /**
-     * The lance stays a crafting recipe in Epic Knights' own shape — it is too special a shape
+     * The lance stays a crafting recipe, tip top right as the lance is drawn — it is too special a shape
      * for a blade item — but, like the shields, is built from plates instead of ingots so the
      * metal passes through the anvil. The stone lance keeps Epic Knights' cobblestone recipe.
      */
@@ -409,7 +409,7 @@ public class OvergearedRecipeProvider implements DataProvider {
             key.add("P", tagRef("magistuarmory:poles"));
             key.add("H", tagRef("magistuarmory:hilts"));
             obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"M  ", "MP ", "HM "}));
+            obj.add("pattern", strArray(new String[]{"  M", "MP ", "HM "}));
             obj.add("result", resultRef("magistuarmory:" + mat.getName() + "_chivalrylance"));
             save(cache, futures, "crafting/chivalrylance/" + mat.getName() + "_chivalrylance", obj);
         }
