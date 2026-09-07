@@ -44,16 +44,11 @@ This keeps the crafting process consistent with how Overgeared handles its own g
 </details>
 
 ## Compatibility
+This mod supports the base Epic Knights mod only. Add-ons are not supported and not planned.
 
-| Mod | Status |
+| DLC | Status |
 |-----|--------|
 | [Epic Knights: Shields, Armor and Weapons](https://modrinth.com/mod/epic-knights-shields-armor-and-weapons) | 🟢 Supported |
-| [Epic Knights: Addon](https://modrinth.com/mod/epic-knights-addon) | 🟢 Supported (optional) |
-
-**Epic Knights: Addon** is optional. When it is installed, all of its steel weapons get the same
-treatment as the base mod: forge the blade or head, then assemble it with a hilt, pole or rod
-(the glaive, like the ranseur, is assembled straight from a shortsword blade).
-Without the addon nothing of that is loaded.
 
 | Minecraft Version | Status |
 |-------------------|--------|
@@ -81,7 +76,6 @@ Without the addon nothing of that is loaded.
 
 ### Original Mods
 - **[Epic Knights: Shields, Armor and Weapons](https://modrinth.com/mod/epic-knights-shields-armor-and-weapons)** - Medieval weapons and armor system
-- **[Epic Knights: Addon](https://modrinth.com/mod/epic-knights-addon)** - Additional weapons and armour (optional)
 - **[Overgeared](https://modrinth.com/mod/overgeared)** - Material-based forging and crafting system
 
 ### Disclaimer
@@ -91,22 +85,3 @@ All rights to the original mods remain with their respective creators. This mod 
 
 ### Development Tools
 Parts of this mod's JSON generation were assisted by Claude Code to handle the repetitive transcription work involved in creating recipes for multiple items and materials. All design decisions, textures, recipe balancing, and item registration were done manually.
-
-## Development
-
-Blade textures and recipes are derived, not hand-made per material:
-
-- `tools/textures/extract_blade.py` cuts a first draft of the blade/head master
-  (`steel_<weapon>_blade.png`) out of an Epic Knights weapon texture (handle detection by colour,
-  per-weapon overrides in `blade_masks.json`). The shipped masters, base and addon, are hand-edited;
-  the script never overwrites an existing file unless asked to with `--force`.
-- `tools/textures/gen_materials.py` derives every other material from the steel master using the
-  palette of the Epic Knights originals.
-- `tools/derive_addon.py` turns the addon's crafting recipes into `BladeType` entries; deliberate
-  deviations from the original shapes live in its `PATTERN_OVERRIDES`.
-- `tools/check_conflicts.py <generated resources dir>` finds forging grids, assembly ingredient sets,
-  casting recipes or tool types that would collide. Overgeared matches the 3x3 forging grid exactly
-  (no shifting, no mirroring), so two blades may only differ by position — run it after every change.
-- Everything else (items, models, recipes, tool types, blueprints, names, recipe removal) follows
-  from `BladeType` and `ForgingTable` at DataGen time: `./gradlew chiseledRunData`.
-
