@@ -63,6 +63,7 @@ public class OvergearedRecipeProvider implements DataProvider {
             generateBlasting(cache, futures);
             generateShieldForging(cache, futures);
             generateShieldCasting(cache, futures);
+            generateChivalryLance(cache, futures);
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -389,6 +390,29 @@ public class OvergearedRecipeProvider implements DataProvider {
         obj.add("ingredient", tagRef(Mappings.COMMON + ":forged/steel"));
         obj.addProperty("result", "overgeared:steel_nugget");
         save(cache, futures, "blasting/overgeared_steel_nugget_from_blasting", obj);
+    }
+
+    // ── Chivalry lance ────────────────────────────────────────────────────────
+
+    /**
+     * The lance stays a crafting recipe in Epic Knights' own shape — it is too special a shape
+     * for a blade item — but, like the shields, is built from plates instead of ingots so the
+     * metal passes through the anvil. The stone lance keeps Epic Knights' cobblestone recipe.
+     */
+    private void generateChivalryLance(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (BladeMaterial mat : SHIELD_MATS) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "minecraft:crafting_shaped");
+            obj.addProperty("category", "equipment");
+            JsonObject key = new JsonObject();
+            key.add("M", itemRef(plateItem(mat)));
+            key.add("P", tagRef("magistuarmory:poles"));
+            key.add("H", tagRef("magistuarmory:hilts"));
+            obj.add("key", key);
+            obj.add("pattern", strArray(new String[]{"M  ", "MP ", "HM "}));
+            obj.add("result", resultRef("magistuarmory:" + mat.getName() + "_chivalrylance"));
+            save(cache, futures, "crafting/chivalrylance/" + mat.getName() + "_chivalrylance", obj);
+        }
     }
 
     // ── Shield forging ────────────────────────────────────────────────────────

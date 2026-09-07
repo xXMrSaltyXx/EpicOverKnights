@@ -7,6 +7,7 @@ Overgeared x Epic Knights Changelog
   tool types for every addon steel weapon, anvil forging for every armour piece and decoration
   with metal to hammer, and quality-preserving assembly for parts joined by hand onto forged
   armour; recipes live in a built-in datapack that is only enabled when the addon is installed
+- The chivalry lance is crafted from plates instead of ingots, like the shields
 - Forging for the base mod's brigandine, platemail boots, XIV century knight boots and the
   ecranche, rondel, spike and two-plumes decorations (stock metal with leather or cloth fitted)
 - Recipe removal is now rule-based: every Epic Knights recipe whose result we forge is
