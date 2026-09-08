@@ -1,7 +1,7 @@
 Overgeared x Epic Knights Changelog
 =========================
 
-1.1.0 (unreleased)
+1.1.0 (2026-09-08)
 ------------------
 - Epic Knights: Addon support (optional): forging, casting, assembly, blueprints and
   tool types for every addon steel weapon, anvil forging for every armour piece and decoration
