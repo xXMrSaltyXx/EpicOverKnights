@@ -84,5 +84,8 @@ This is an **unofficial** compatibility mod created by the community.
 
 All rights to the original mods remain with their respective creators. This mod only provides integration between Epic Knights and Overgeared by adding compatible recipes, intermediate crafting components, and blueprints to bridge the two systems.
 
+### Credits
+Thanks to [Magistu](https://github.com/Magistu) for letting me use and edit their textures
+
 ### Development Tools
 Code is Co-Authored by Claude Code. All design decisions, textures and recipe balancing were done manually.
