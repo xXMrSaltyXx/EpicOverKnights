@@ -15,6 +15,8 @@ Overgeared x Epic Knights Changelog
 - Names, armour recipes and tool-type lists are generated from one definition table
 - New tooling under tools/ to derive blade textures and addon recipes, and to check
   for recipe conflicts (all base and addon recipes are verified conflict-free)
+- Verified against Overgeared 1.20.1-1.6.33 and 1.21.1-1.6.17; minimum Overgeared version raised
+  accordingly
 
 1.0.0 (2026)
 ------------
