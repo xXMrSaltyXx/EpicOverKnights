@@ -49,6 +49,7 @@ Core mods maintained | Addon development open for contributions
 | DLC | Status |
 |-----|--------|
 | [Epic Knights: Shields, Armor and Weapons](https://modrinth.com/mod/epic-knights-shields-armor-and-weapons) | 🟢 Supported |
+| [Epic Knights: Addon](https://modrinth.com/mod/epic-knights-addon) | 🟢 Supported (In Trial, can have bugs) |
 
 | Minecraft Version | Status |
 |-------------------|--------|
