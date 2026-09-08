@@ -29,8 +29,16 @@ repositories {
         url = "${rootProject.projectDir}/libs/mvn"
         metadataSources { artifact() } // jars only, no POMs
     }
-    maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
-    maven { name = 'CurseMaven'; url = 'https://www.cursemaven.com' }
+    // Exclusive: other repos (e.g. maven.neoforged.net) answer 502 instead of 404 for unknown
+    // paths, which aborts resolution before Modrinth is asked.
+    exclusiveContent {
+        forRepository { maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' } }
+        filter { includeGroup 'maven.modrinth' }
+    }
+    exclusiveContent {
+        forRepository { maven { name = 'CurseMaven'; url = 'https://www.cursemaven.com' } }
+        filter { includeGroup 'curse.maven' }
+    }
 }
 
 legacyForge {
@@ -79,12 +87,17 @@ sourceSets.main.resources {
 
 dependencies {
     // Overgeared — compile (builder API) + runtime. Production (SRG) jars; mod* configs remap to official.
-    modCompileOnly "maven.modrinth:overgeared:1.20.1-1.6.32"
-    modRuntimeOnly "maven.modrinth:overgeared:1.20.1-1.6.32"
+    modCompileOnly "maven.modrinth:overgeared:1.20.1-1.6.33"
+    modRuntimeOnly "maven.modrinth:overgeared:1.20.1-1.6.33"
 
     // Epic Knights — runtime only, local jar with the DataGen fix (see BACKPORT.md §4).
     // mod* config remaps it SRG->official, like the Modrinth deps.
     modRuntimeOnly "local:epic-knights-forge:10.11"
+
+    // Epic Knights: Addon — optional at runtime, but needed on the DataGen classpath so the
+    // addon blades and their datapack are generated. Pinned by Modrinth version id ("2.6"
+    // is shared by the forge and fabric builds).
+    modRuntimeOnly "maven.modrinth:epic-knights-addon:xnYQSIH7"
 
     // Runtime deps (mods Overgeared/EK rely on, plus dev-time tooling).
     modRuntimeOnly "maven.modrinth:architectury-api:9.2.14+forge"

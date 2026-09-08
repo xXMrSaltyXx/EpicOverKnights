@@ -4,16 +4,17 @@ import com.saltycodes.overgearedepicknights.Mappings;
 
 // Each material carries casting/forging recipe data. STONE has no casting or forging — knapping only.
 public enum BladeMaterial {
-    BRONZE("bronze", true,  0.15f, false, Mappings.COMMON + ":ingots/bronze",            "stone"),
-    COPPER("copper", true,  0.10f, true,  "overgeared:heated_copper_ingot", "stone"),
-    GOLD(  "gold",   true,  0.25f, false, Mappings.COMMON + ":ingots/gold",              "iron"),
-    IRON(  "iron",   true,  0.20f, true,  "overgeared:heated_iron_ingot",   "iron"),
-    SILVER("silver", true,  0.30f, false, Mappings.COMMON + ":ingots/silver",            "iron"),
-    STEEL( "steel",  true,  0.35f, true,  "overgeared:heated_steel_ingot",  "iron"),
-    TIN(   "tin",    true,  0.10f, false, Mappings.COMMON + ":ingots/tin",               "stone"),
-    STONE( "stone",  false, 0,     false, null,                             null);
+    BRONZE("bronze", "Bronze", true,  0.15f, false, Mappings.COMMON + ":ingots/bronze", "stone"),
+    COPPER("copper", "Copper", true,  0.10f, true,  "overgeared:heated_copper_ingot",   "stone"),
+    GOLD(  "gold",   "Gold",   true,  0.25f, false, Mappings.COMMON + ":ingots/gold",   "iron"),
+    IRON(  "iron",   "Iron",   true,  0.20f, true,  "overgeared:heated_iron_ingot",     "iron"),
+    SILVER("silver", "Silver", true,  0.30f, false, Mappings.COMMON + ":ingots/silver", "iron"),
+    STEEL( "steel",  "Steel",  true,  0.35f, true,  "overgeared:heated_steel_ingot",    "iron"),
+    TIN(   "tin",    "Tin",    true,  0.10f, false, Mappings.COMMON + ":ingots/tin",    "stone"),
+    STONE( "stone",  "Stone",  false, 0,     false, null,                               null);
 
     private final String name;
+    private final String displayName;
     private final boolean hasCasting;
     private final float castingXp;
     /** true = use {"item": forgingIngredient}, false = use {"tag": forgingIngredient} */
@@ -23,9 +24,10 @@ public enum BladeMaterial {
     /** required anvil tier: "stone", "iron", or null for STONE */
     private final String forgingTier;
 
-    BladeMaterial(String name, boolean hasCasting, float castingXp,
+    BladeMaterial(String name, String displayName, boolean hasCasting, float castingXp,
                   boolean forgingIsItem, String forgingIngredient, String forgingTier) {
         this.name = name;
+        this.displayName = displayName;
         this.hasCasting = hasCasting;
         this.castingXp = castingXp;
         this.forgingIsItem = forgingIsItem;
@@ -34,6 +36,7 @@ public enum BladeMaterial {
     }
 
     public String getName() { return name; }
+    public String getDisplayName() { return displayName; }
     public boolean hasCasting() { return hasCasting; }
     public float getCastingXp() { return castingXp; }
     public boolean isForgingItem() { return forgingIsItem; }

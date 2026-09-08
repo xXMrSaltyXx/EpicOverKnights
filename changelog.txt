@@ -1,6 +1,25 @@
 Overgeared x Epic Knights Changelog
 =========================
 
+1.1.0 (2026-09-08)
+------------------
+- Epic Knights: Addon support (optional): forging, casting, assembly, blueprints and
+  tool types for every addon steel weapon, anvil forging for every armour piece and decoration
+  with metal to hammer, and quality-preserving assembly for parts joined by hand onto forged
+  armour; recipes live in a built-in datapack that is only enabled when the addon is installed
+- The chivalry lance is crafted from plates instead of ingots, like the shields
+- Forging for the base mod's brigandine, platemail boots, XIV century knight boots and the
+  ecranche, rondel, spike and two-plumes decorations (stock metal with leather or cloth fitted)
+- Recipe removal is now rule-based: every Epic Knights recipe whose result we forge is
+  dropped automatically
+- Names, armour recipes and tool-type lists are generated from one definition table
+- New tooling under tools/ to derive blade textures and addon recipes, and to check
+  for recipe conflicts (all base and addon recipes are verified conflict-free)
+- Verified against Overgeared 1.20.1-1.6.33 and 1.21.1-1.6.17; minimum Overgeared version raised
+  accordingly
+- The Epic Knights blacksmith hammer is tagged as an Overgeared smithing hammer (iron tier)
+  and works on the smithing anvil
+
 1.0.0 (2026)
 ------------
 - Initial release

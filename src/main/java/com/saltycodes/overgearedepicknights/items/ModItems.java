@@ -28,6 +28,8 @@ public class ModItems {
 
     /**
      * All blade items, keyed by BladeType → BladeMaterial → registered item holder.
+     * Only {@link BladeType#active()} entries are registered: addon blades exist solely when
+     * Epic Knights: Addon is loaded.
      * To add a new blade type, add an entry to {@link BladeType}.
      * To add a new material, add an entry to {@link BladeMaterial}.
      */
@@ -43,14 +45,14 @@ public class ModItems {
         //?} else {
         /*Map<BladeType, Map<BladeMaterial, DeferredItem<Item>>> blades = new EnumMap<>(BladeType.class);
         *///?}
-        for (BladeType type : BladeType.values()) {
+        for (BladeType type : BladeType.active()) {
             //? if forge {
             Map<BladeMaterial, RegistryObject<Item>> materialMap = new EnumMap<>(BladeMaterial.class);
             //?} else {
             /*Map<BladeMaterial, DeferredItem<Item>> materialMap = new EnumMap<>(BladeMaterial.class);
             *///?}
             for (BladeMaterial material : type.getMaterials()) {
-                String id = material.getName() + "_" + type.getName() + type.getSuffix();
+                String id = type.itemPath(material);
                 //? if forge {
                 materialMap.put(material, ITEMS.register(id, () -> new Item(new Item.Properties())));
                 //?} else {
@@ -67,7 +69,15 @@ public class ModItems {
     //?} else {
     /*public static DeferredItem<Item> getBlade(BladeType type, BladeMaterial material) {
     *///?}
-        return BLADES.get(type).get(material);
+        Map<BladeMaterial, ?> byMaterial = BLADES.get(type);
+        if (byMaterial == null) {
+            throw new IllegalStateException(type + " is not registered (Epic Knights: Addon missing?)");
+        }
+        //? if forge {
+        return (RegistryObject<Item>) byMaterial.get(material);
+        //?} else {
+        /*return (DeferredItem<Item>) byMaterial.get(material);
+        *///?}
     }
 
     //? if forge {

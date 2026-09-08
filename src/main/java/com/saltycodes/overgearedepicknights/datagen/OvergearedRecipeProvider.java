@@ -13,14 +13,24 @@ import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-// Gson-based recipes: assembly, HARDCODED forging, knapping, tooltypes, smithing, blasting, shields, armour.
-// Casting and SIMPLE/COMPOUND forging are in OvergearedBuilderRecipeProvider.
+/**
+ * Gson-based recipes: assembly, direct forging (armour and other blade-less items), knapping,
+ * tool types, blueprints, smithing, blasting, shields and the odd special recipe.
+ * Casting and blade forging are in {@link OvergearedBuilderRecipeProvider}.
+ *
+ * <p>With {@code addon = true} the provider writes only the Epic Knights: Addon share — the
+ * per-{@link BladeType} recipes of the addon entries and the addon rows of {@link ForgingTable} —
+ * under the {@code addon/} recipe path so nothing collides with the base pack.
+ */
 public class OvergearedRecipeProvider implements DataProvider {
 
     private final PackOutput.PathProvider recipePaths;
     private final String modId;
+    private final boolean addon;
+    private final List<BladeType> types;
 
     private static final BladeMaterial[] SHIELD_MATS = {
             BladeMaterial.BRONZE, BladeMaterial.COPPER, BladeMaterial.GOLD,
@@ -28,182 +38,99 @@ public class OvergearedRecipeProvider implements DataProvider {
             BladeMaterial.TIN
     };
 
-    // Blueprint-craft representative items.
-    private static final String[] SHIELD_BLUEPRINT_TYPES = {
-            "buckler","heatershield","ellipticalshield","kiteshield",
-            "pavese","rondache","roundshield","tartsche","target"
-    };
-    private static final String[] ARMOR_BLUEPRINT_TYPES = {
-            "armet","barbute","bascinet","grand_bascinet","face_helmet",
-            "greathelm","kettlehat","norman_helmet","sallet","shishak","stechhelm",
-            "crusader_leggings","cuirassier_chestplate","cuirassier_helmet",
-            "gothic_boots","gothic_chestplate","gothic_leggings",
-            "halfarmor_chestplate","jousting_boots","jousting_chestplate","jousting_leggings",
-            "kastenbrust_boots","kastenbrust_chestplate","kastenbrust_leggings",
-            "knight_boots","knight_chestplate","knight_leggings",
-            "platemail_chestplate","platemail_leggings",
-            "xivcenturyknight_chestplate","xivcenturyknight_leggings"
-    };
-
-    public OvergearedRecipeProvider(PackOutput output, String modId) {
+    public OvergearedRecipeProvider(PackOutput output, String modId, boolean addon) {
         this.recipePaths = output.createPathProvider(PackOutput.Target.DATA_PACK, Mappings.RECIPE_DIR);
         this.modId = modId;
+        this.addon = addon;
+        this.types = BladeType.of(addon);
     }
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        generateForgingHardcoded(cache, futures);
+        generateDirectForging(cache, futures);
         generateAssembly(cache, futures);
-        generateSpecialCrafting(cache, futures);
+        generateAssemblyOnly(cache, futures);
+        generateArmorAssembly(cache, futures);
         generateKnapping(cache, futures);
         generateTooltypes(cache, futures);
-        generateSmithing(cache, futures);
-        generateBlasting(cache, futures);
-        generateShieldForging(cache, futures);
-        generateShieldCasting(cache, futures);
-        generateArmorForging(cache, futures);
         generateBlueprintCrafting(cache, futures);
         generateToolCastPlaceholders(cache, futures);
+        if (!addon) {
+            generateChainmorgensternAssembly(cache, futures);
+            generateSpecialCrafting(cache, futures);
+            generateSmithing(cache, futures);
+            generateBlasting(cache, futures);
+            generateShieldForging(cache, futures);
+            generateShieldCasting(cache, futures);
+            generateChivalryLance(cache, futures);
+        }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @Override
     public String getName() {
-        return "Overgeared Recipe Provider";
+        return "Overgeared Recipe Provider" + (addon ? " (addon)" : "");
     }
 
-    // ── HARDCODED forging ────────────────────────────────────────────────────
+    // ── Direct forging (ForgingTable: armour, plates, all-metal addon pieces) ──
 
-    private void generateForgingHardcoded(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        // BLACKSMITH_HAMMER
-        {
-            JsonObject obj = forgingBase("blacksmith_hammer", "iron", 7);
+    private void generateDirectForging(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (ForgingTable.Entry e : ForgingTable.of(addon)) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "overgeared:forging");
+            obj.addProperty("category", e.category());
+            if (e.blueprint() != null) {
+                obj.add("blueprint", strArray(new String[]{e.blueprint()}));
+                obj.addProperty("requires_blueprint", false);
+            }
+            obj.addProperty("hammering", e.hammering());
+            obj.addProperty("has_quality", e.quality());
+            obj.addProperty("need_quenching", e.quench());
+            obj.addProperty("needs_minigame", e.minigame());
             JsonObject key = new JsonObject();
-            key.add("#", itemRef("overgeared:heated_steel_ingot"));
+            for (Map.Entry<Character, String> k : e.keys().entrySet()) {
+                key.add(String.valueOf(k.getKey()), parseIngredient(k.getValue()));
+            }
             obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"###", "# #", "   "}));
-            obj.add("result", resultRef(modId + ":steel_blacksmith_hammer_blade"));
-            save(cache, futures, "forging/blacksmith_hammer_blade/steel_blacksmith_hammer_blade", obj);
+            obj.add("pattern", strArray(e.pattern()));
+            obj.add("result", resultRef(e.result()));
+            obj.addProperty("show_notification", true);
+            save(cache, futures, e.path(), obj);
         }
-        // BARBED_CLUB
-        {
-            JsonObject obj = forgingBase("barbed_club", "iron", 5);
-            JsonObject key = new JsonObject();
-            key.add("a", itemRef("overgeared:steel_nugget"));
-            key.add("c", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{" ac", "aca", " a "}));
-            obj.add("result", resultRef(modId + ":steel_barbed_club_blade"));
-            save(cache, futures, "forging/barbed_club_blade/steel_barbed_club_blade", obj);
-        }
-        // PITCHFORK
-        {
-            JsonObject obj = forgingBase("pitchfork", "iron", 3);
-            JsonObject key = new JsonObject();
-            key.add("#", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"###", "###", " # "}));
-            obj.add("result", resultRef(modId + ":steel_pitchfork_blade"));
-            save(cache, futures, "forging/pitchfork_blade/steel_pitchfork_blade", obj);
-        }
-        // HEAVY_CROSSBOW
-        {
-            JsonObject obj = forgingBase("heavy_crossbow", "iron", 5);
-            JsonObject key = new JsonObject();
-            key.add("#", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"###", "   ", "   "}));
-            obj.add("result", resultRef(modId + ":steel_heavy_crossbow_prodd"));
-            save(cache, futures, "forging/heavy_crossbow_prodd/steel_heavy_crossbow_prodd", obj);
-        }
-        // MESSER_SWORD
-        {
-            JsonObject obj = forgingBase("messer_sword", "iron", 6);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_iron_ingot"));
-            key.add("N", tagRef(Mappings.COMMON + ":nuggets/iron"));
-            key.add("B", itemRef(modId + ":iron_shortsword_blade"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"IN ", "B  ", "   "}));
-            obj.add("result", resultRef(modId + ":iron_messer_sword_blade"));
-            save(cache, futures, "forging/messer_sword_blade/iron_messer_sword_blade", obj);
-        }
-    }
-
-    private JsonObject forgingBase(String blueprint, String tier, int hammering) {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("type", "overgeared:forging");
-        obj.addProperty("category", "misc");
-        JsonArray bp = new JsonArray();
-        bp.add(blueprint);
-        obj.add("blueprint", bp);
-        obj.addProperty("requires_blueprint", false);
-        obj.addProperty("tier", tier);
-        obj.addProperty("hammering", hammering);
-        obj.addProperty("has_polishing", true);
-        obj.addProperty("has_quality", true);
-        obj.addProperty("minimum_quality", "poor");
-        obj.addProperty("need_quenching", true);
-        obj.addProperty("needs_minigame", true);
-        obj.addProperty("show_notification", true);
-        return obj;
     }
 
     // ── Assembly (crafting_shapeless) ────────────────────────────────────────
 
     private void generateAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        for (BladeType type : BladeType.values()) {
-            if (type == BladeType.HEAVY_CROSSBOW) {
-                generateHeavyCrossbowAssembly(cache, futures);
-                continue;
-            }
-            if (type.getForgeMode() == BladeType.ForgeMode.HARDCODED) {
-                BladeMaterial mat = type.getMaterials().iterator().next();
-                generateShapelessAssembly(cache, futures, type, mat);
+        for (BladeType type : types) {
+            if (type.getAssemblyIngredients() == null) {
+                if (type == BladeType.HEAVY_CROSSBOW) generateHeavyCrossbowAssembly(cache, futures);
                 continue;
             }
             for (BladeMaterial mat : type.getMaterials()) {
                 generateShapelessAssembly(cache, futures, type, mat);
-                if (type.isCompound() && mat == BladeMaterial.STONE) {
+                if (type.hasStoneBlade() && mat == BladeMaterial.STONE) {
                     generateStoneBladeCraft(cache, futures, type);
                 }
             }
-            if (type == BladeType.MORGENSTERN) {
-                generateChainmorgensternAssembly(cache, futures, type);
-            }
         }
-        generateRanseurAssembly(cache, futures);
     }
 
     private void generateShapelessAssembly(CachedOutput cache, List<CompletableFuture<?>> futures,
                                             BladeType type, BladeMaterial mat) {
-        String bladeId  = modId + ":" + mat.getName() + "_" + type.getName() + type.getSuffix();
-        String resultId = assemblyResult(type, mat);
-        if (resultId == null) return;
-
         JsonObject obj = new JsonObject();
         obj.addProperty("type", "overgeared:crafting_shapeless");
         obj.addProperty("category", "equipment");
         JsonArray ingredients = new JsonArray();
-        ingredients.add(itemRef(bladeId));
+        ingredients.add(itemRef(type.itemId(mat)));
         for (String extra : type.getAssemblyIngredients()) {
             ingredients.add(parseIngredient(extra));
         }
         obj.add("ingredients", ingredients);
-        obj.add("result", resultRef(resultId));
+        obj.add("result", resultRef(type.resultId(mat)));
 
         save(cache, futures, "crafting/" + type.getName() + "/" + mat.getName() + "_" + type.getName(), obj);
-    }
-
-    private String assemblyResult(BladeType type, BladeMaterial mat) {
-        return switch (type) {
-            case BLACKSMITH_HAMMER -> "magistuarmory:blacksmith_hammer";
-            case BARBED_CLUB       -> "magistuarmory:barbedclub";
-            case PITCHFORK         -> "magistuarmory:pitchfork";
-            case MESSER_SWORD      -> "magistuarmory:messer_sword";
-            default -> "magistuarmory:" + mat.getName() + "_" + type.getName();
-        };
     }
 
     private void generateStoneBladeCraft(CachedOutput cache, List<CompletableFuture<?>> futures,
@@ -214,23 +141,21 @@ public class OvergearedRecipeProvider implements DataProvider {
         obj.add("pattern", strArray(type.getStoneBladePattern()));
         JsonObject key = new JsonObject();
         key.add("I", itemRef("minecraft:cobblestone"));
-        key.add("#", itemRef(modId + ":stone_shortsword_blade"));
+        key.add("#", itemRef(BladeType.SHORTSWORD.itemId(BladeMaterial.STONE)));
         obj.add("key", key);
         JsonObject result = new JsonObject();
-        result.addProperty(Mappings.RESULT_KEY, modId + ":stone_" + type.getName() + "_blade");
+        result.addProperty(Mappings.RESULT_KEY, type.itemId(BladeMaterial.STONE));
         obj.add("result", result);
-        save(cache, futures, "crafting/" + type.getName() + "/stone_" + type.getName() + "_blade", obj);
+        save(cache, futures, "crafting/" + type.getName() + "/" + type.itemPath(BladeMaterial.STONE), obj);
     }
 
-    private void generateChainmorgensternAssembly(CachedOutput cache, List<CompletableFuture<?>> futures,
-                                                   BladeType morgensternType) {
-        for (BladeMaterial mat : morgensternType.getMaterials()) {
-            String bladeId = modId + ":" + mat.getName() + "_morgenstern_blade";
+    private void generateChainmorgensternAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (BladeMaterial mat : BladeType.MORGENSTERN.getMaterials()) {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "overgeared:crafting_shapeless");
             obj.addProperty("category", "equipment");
             JsonArray ingredients = new JsonArray();
-            ingredients.add(itemRef(bladeId));
+            ingredients.add(itemRef(BladeType.MORGENSTERN.itemId(mat)));
             ingredients.add(tagRef("magistuarmory:chains/steel"));
             ingredients.add(itemRef("magistuarmory:hilt"));
             ingredients.add(tagRef(Mappings.COMMON + ":rods/wooden"));
@@ -239,6 +164,59 @@ public class OvergearedRecipeProvider implements DataProvider {
             save(cache, futures,
                     "crafting/chainmorgenstern/" + mat.getName() + "_chainmorgenstern", obj);
         }
+    }
+
+    /** Weapons without a blade item of their own: another blade plus handle parts (ranseur, glaive). */
+    private void generateAssemblyOnly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (ForgingTable.AssemblyOnly a : ForgingTable.assemblyOnly(addon)) {
+            Iterable<BladeMaterial> materials = addon ? List.of(BladeMaterial.STEEL) : a.blade().getMaterials();
+            for (BladeMaterial mat : materials) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("type", "overgeared:crafting_shapeless");
+                obj.addProperty("category", "equipment");
+                JsonArray ingredients = new JsonArray();
+                ingredients.add(itemRef(a.blade().itemId(mat)));
+                for (String extra : a.extra()) ingredients.add(parseIngredient(extra));
+                obj.add("ingredients", ingredients);
+                obj.add("result", resultRef(a.result().replace("{mat}", mat.getName())));
+                save(cache, futures, "crafting/" + a.name() + "/" + mat.getName() + "_" + a.name(), obj);
+            }
+        }
+    }
+
+    /** Armour from a forged base plus loose parts (ForgingTable.assemblies): the base's quality carries over. */
+    private void generateArmorAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (ForgingTable.Assembly a : ForgingTable.assemblies(addon)) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "overgeared:crafting_shapeless");
+            obj.addProperty("category", "equipment");
+            JsonArray ingredients = new JsonArray();
+            ingredients.add(parseIngredient(a.base()));
+            for (String extra : a.extra()) ingredients.add(parseIngredient(extra));
+            obj.add("ingredients", ingredients);
+            obj.add("result", resultRef(a.result()));
+            save(cache, futures, "crafting/" + a.name(), obj);
+        }
+    }
+
+    private void generateHeavyCrossbowAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "minecraft:crafting_shaped");
+        obj.addProperty("category", "equipment");
+        obj.add("pattern", strArray(new String[]{" B ", "shs", " p "}));
+        JsonObject key = new JsonObject();
+        key.add("B", itemRef(BladeType.HEAVY_CROSSBOW.itemId(BladeMaterial.STEEL)));
+        key.add("s", itemRef("minecraft:string"));
+        key.add("h", itemRef("minecraft:tripwire_hook"));
+        key.add("p", itemRef("magistuarmory:pole"));
+        obj.add("key", key);
+        JsonObject result = new JsonObject();
+        result.addProperty(Mappings.RESULT_KEY, BladeType.HEAVY_CROSSBOW.resultId(BladeMaterial.STEEL));
+        //? if neoforge {
+        /*result.addProperty("count", 1);
+        *///?}
+        obj.add("result", result);
+        save(cache, futures, "crafting/heavy_crossbow/steel_heavy_crossbow", obj);
     }
 
     // ── Special crafting (vanilla shaped + wingedhussar assembly) ────────────
@@ -321,80 +299,45 @@ public class OvergearedRecipeProvider implements DataProvider {
         }
     }
 
-    private void generateRanseurAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        for (BladeMaterial mat : BladeMaterial.values()) {
-            String bladeId = modId + ":" + mat.getName() + "_shortsword_blade";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "overgeared:crafting_shapeless");
-            obj.addProperty("category", "equipment");
-            JsonArray ingredients = new JsonArray();
-            ingredients.add(itemRef(bladeId));
-            ingredients.add(itemRef("magistuarmory:pole"));
-            obj.add("ingredients", ingredients);
-            obj.add("result", resultRef("magistuarmory:" + mat.getName() + "_ranseur"));
-            save(cache, futures, "crafting/ranseur/" + mat.getName() + "_ranseur", obj);
-        }
-    }
-
-    private void generateHeavyCrossbowAssembly(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("type", "minecraft:crafting_shaped");
-        obj.addProperty("category", "equipment");
-        obj.add("pattern", strArray(new String[]{" B ", "shs", " p "}));
-        JsonObject key = new JsonObject();
-        key.add("B", itemRef(modId + ":steel_heavy_crossbow_prodd"));
-        key.add("s", itemRef("minecraft:string"));
-        key.add("h", itemRef("minecraft:tripwire_hook"));
-        key.add("p", itemRef("magistuarmory:pole"));
-        obj.add("key", key);
-        JsonObject result = new JsonObject();
-        result.addProperty(Mappings.RESULT_KEY, "magistuarmory:heavy_crossbow");
-        //? if neoforge {
-        /*result.addProperty("count", 1);
-        *///?}
-        obj.add("result", result);
-        save(cache, futures, "crafting/heavy_crossbow/steel_heavy_crossbow", obj);
-    }
-
     // ── Knapping ─────────────────────────────────────────────────────────────
 
     private void generateKnapping(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        for (BladeType type : BladeType.values()) {
+        for (BladeType type : types) {
             if (!type.hasKnapping()) continue;
-            String bladeId = modId + ":stone_" + type.getName() + type.getSuffix();
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "overgeared:rock_knapping");
             obj.add("pattern", strArray(type.getKnapPattern()));
             obj.add("ingredient", itemRef("minecraft:cobblestone"));
-            obj.add("result", resultRef(bladeId));
+            obj.add("result", resultRef(type.itemId(BladeMaterial.STONE)));
             obj.addProperty("show_notification", true);
-            save(cache, futures, "knapping/stone_" + type.getName() + type.getSuffix(), obj);
+            save(cache, futures, "knapping/" + type.itemPath(BladeMaterial.STONE), obj);
         }
     }
 
     // ── Item-to-tooltype ─────────────────────────────────────────────────────
 
     private void generateTooltypes(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        for (BladeType type : BladeType.values()) {
+        for (BladeType type : types) {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "overgeared:item_to_tooltype");
             JsonArray items = new JsonArray();
             for (BladeMaterial mat : type.getMaterials()) {
                 if (mat == BladeMaterial.STONE) continue;
-                items.add(itemRef(modId + ":" + mat.getName() + "_" + type.getName() + type.getSuffix()));
+                items.add(itemRef(type.itemId(mat)));
             }
             if (items.isEmpty()) continue;
             obj.add("item", items);
-            obj.addProperty("tooltype", type.getName());
+            obj.addProperty("tooltype", type.getTooltype());
             save(cache, futures, "tooltypes/" + type.getName() + "_to_tooltype", obj);
         }
+        if (addon) return;
         // chainmorgenstern uses morgenstern blades
         JsonObject chain = new JsonObject();
         chain.addProperty("type", "overgeared:item_to_tooltype");
         JsonArray chainItems = new JsonArray();
-        for (BladeMaterial mat : BladeMaterial.values()) {
+        for (BladeMaterial mat : BladeType.MORGENSTERN.getMaterials()) {
             if (mat == BladeMaterial.STONE) continue;
-            chainItems.add(itemRef(modId + ":" + mat.getName() + "_morgenstern_blade"));
+            chainItems.add(itemRef(BladeType.MORGENSTERN.itemId(mat)));
         }
         chain.add("item", chainItems);
         chain.addProperty("tooltype", "chainmorgenstern");
@@ -409,10 +352,6 @@ public class OvergearedRecipeProvider implements DataProvider {
             "concavehalberd", "heavymace", "heavywarhammer", "lucernhammer",
             "morgenstern", "chainmorgenstern", "guisarme"
     };
-    private static final String[] SMITHING_SHIELD_TYPES = {
-            "heatershield", "buckler", "target", "rondache", "ellipticalshield",
-            "kiteshield", "pavese", "roundshield", "tartsche"
-    };
 
     private void generateSmithing(CachedOutput cache, List<CompletableFuture<?>> futures) {
         String template = "overgeared:diamond_upgrade_smithing_template";
@@ -421,7 +360,7 @@ public class OvergearedRecipeProvider implements DataProvider {
                     "smithing/steel_" + weapon + "_to_diamond_" + weapon,
                     smithingTransform(template, "magistuarmory:steel_" + weapon, "magistuarmory:diamond_" + weapon));
         }
-        for (String shield : SMITHING_SHIELD_TYPES) {
+        for (String shield : ForgingTable.SHIELDS.keySet()) {
             save(cache, futures,
                     "smithing/steel_" + shield + "_to_diamond_" + shield,
                     smithingTransform(template, "magistuarmory:steel_" + shield, "magistuarmory:diamond_" + shield));
@@ -453,414 +392,27 @@ public class OvergearedRecipeProvider implements DataProvider {
         save(cache, futures, "blasting/overgeared_steel_nugget_from_blasting", obj);
     }
 
-    // ── Armor forging ─────────────────────────────────────────────────────────
+    // ── Chivalry lance ────────────────────────────────────────────────────────
 
-    private void generateArmorForging(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        // small_steel_plate — misc, no blueprint, no minigame
-        {
-            JsonObject obj = armorForgingBase(null, "misc", 3, false, true, false);
-            JsonObject key = new JsonObject(); key.add("#", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"##", "##", "##"}));
-            obj.add("result", resultRef("magistuarmory:small_steel_plate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/small_steel_plate", obj);
-        }
-        // norman_helmet
-        {
-            JsonObject obj = armorForgingBase("norman_helmet", "armor", 7, true, true, true);
+    /**
+     * The lance stays a crafting recipe, tip top right as the lance is drawn — it is too special a shape
+     * for a blade item — but, like the shields, is built from plates instead of ingots so the
+     * metal passes through the anvil. The stone lance keeps Epic Knights' cobblestone recipe.
+     */
+    private void generateChivalryLance(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (BladeMaterial mat : SHIELD_MATS) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "minecraft:crafting_shaped");
+            obj.addProperty("category", "equipment");
             JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
+            key.add("M", itemRef(plateItem(mat)));
+            key.add("P", tagRef("magistuarmory:poles"));
+            key.add("H", tagRef("magistuarmory:hilts"));
             obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"III", "I I", "CCC"}));
-            obj.add("result", resultRef("magistuarmory:norman_helmet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/norman_helmet", obj);
+            obj.add("pattern", strArray(new String[]{"  M", "MP ", "HM "}));
+            obj.add("result", resultRef("magistuarmory:" + mat.getName() + "_chivalrylance"));
+            save(cache, futures, "crafting/chivalrylance/" + mat.getName() + "_chivalrylance", obj);
         }
-        // barbute
-        {
-            JsonObject obj = armorForgingBase("barbute", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("P", itemRef("overgeared:steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "III", "P P"}));
-            obj.add("result", resultRef("magistuarmory:barbute"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/barbute", obj);
-        }
-        // bascinet
-        {
-            JsonObject obj = armorForgingBase("bascinet", "armor", 4, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("N", itemRef("magistuarmory:norman_helmet"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "PNP", "   "}));
-            obj.add("result", resultRef("magistuarmory:bascinet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/bascinet", obj);
-        }
-        // grand_bascinet
-        {
-            JsonObject obj = armorForgingBase("grand_bascinet", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("H", itemRef("magistuarmory:norman_helmet"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "PHP", "PPP"}));
-            obj.add("result", resultRef("magistuarmory:grand_bascinet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/grand_bascinet", obj);
-        }
-        // kettlehat
-        {
-            JsonObject obj = armorForgingBase("kettlehat", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"III", "P P", "CCC"}));
-            obj.add("result", resultRef("magistuarmory:kettlehat"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/kettlehat", obj);
-        }
-        // shishak
-        {
-            JsonObject obj = armorForgingBase("shishak", "armor", 8, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            key.add("N", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"III", "INI", "CCC"}));
-            obj.add("result", resultRef("magistuarmory:shishak"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/shishak", obj);
-        }
-        // face_helmet
-        {
-            JsonObject obj = armorForgingBase("face_helmet", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("H", itemRef("magistuarmory:shishak"));
-            key.add("S", itemRef("magistuarmory:small_steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "SHS", "SSS"}));
-            obj.add("result", resultRef("magistuarmory:face_helmet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/face_helmet", obj);
-        }
-        // greathelm
-        {
-            JsonObject obj = armorForgingBase("greathelm", "armor", 9, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"III", "I I", "ICI"}));
-            obj.add("result", resultRef("magistuarmory:greathelm"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/greathelm", obj);
-        }
-        // stechhelm
-        {
-            JsonObject obj = armorForgingBase("stechhelm", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("p", itemRef("overgeared:steel_plate"));
-            key.add("b", itemRef("magistuarmory:barbute"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"ppp", "pbp", "ppp"}));
-            obj.add("result", resultRef("magistuarmory:stechhelm"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/stechhelm", obj);
-        }
-        // armet
-        {
-            JsonObject obj = armorForgingBase("armet", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("B", itemRef("magistuarmory:barbute"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "PBP", " P "}));
-            obj.add("result", resultRef("magistuarmory:armet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/armet", obj);
-        }
-        // sallet
-        {
-            JsonObject obj = armorForgingBase("sallet", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("B", itemRef("magistuarmory:barbute"));
-            key.add("P", itemRef("overgeared:steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", " B ", "PPP"}));
-            obj.add("result", resultRef("magistuarmory:sallet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/sallet", obj);
-        }
-        // halfarmor_chestplate
-        {
-            JsonObject obj = armorForgingBase("halfarmor_chestplate", "armor", 10, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("P", itemRef("overgeared:steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"I I", "III", "PIP"}));
-            obj.add("result", resultRef("magistuarmory:halfarmor_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/halfarmor_chestplate", obj);
-        }
-        // platemail_chestplate
-        {
-            JsonObject obj = armorForgingBase("platemail_chestplate", "armor", 4, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"I I", "CCC", "CCC"}));
-            obj.add("result", resultRef("magistuarmory:platemail_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/platemail_chestplate", obj);
-        }
-        // platemail_leggings
-        {
-            JsonObject obj = armorForgingBase("platemail_leggings", "armor", 4, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"CCC", "I I", "C C"}));
-            obj.add("result", resultRef("magistuarmory:platemail_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/platemail_leggings", obj);
-        }
-        // knight_chestplate
-        {
-            JsonObject obj = armorForgingBase("knight_chestplate", "armor", 6, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("H", itemRef("magistuarmory:halfarmor_chestplate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "PHP", " P "}));
-            obj.add("result", resultRef("magistuarmory:knight_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/knight_chestplate", obj);
-        }
-        // knight_leggings
-        {
-            JsonObject obj = armorForgingBase("knight_leggings", "armor", 9, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"PPP", "I I", "P P"}));
-            obj.add("result", resultRef("magistuarmory:knight_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/knight_leggings", obj);
-        }
-        // knight_boots
-        {
-            JsonObject obj = armorForgingBase("knight_boots", "armor", 6, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "I I", "P P"}));
-            obj.add("result", resultRef("magistuarmory:knight_boots"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/knight_boots", obj);
-        }
-        // gothic_chestplate
-        {
-            JsonObject obj = armorForgingBase("gothic_chestplate", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("H", itemRef("magistuarmory:halfarmor_chestplate"));
-            key.add("N", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "PHP", "NPN"}));
-            obj.add("result", resultRef("magistuarmory:gothic_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/gothic_chestplate", obj);
-        }
-        // gothic_leggings
-        {
-            JsonObject obj = armorForgingBase("gothic_leggings", "armor", 9, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("N", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"PPP", "PNP", "PNP"}));
-            obj.add("result", resultRef("magistuarmory:gothic_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/gothic_leggings", obj);
-        }
-        // gothic_boots
-        {
-            JsonObject obj = armorForgingBase("gothic_boots", "armor", 6, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("N", itemRef("overgeared:steel_nugget"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "P P", "N N"}));
-            obj.add("result", resultRef("magistuarmory:gothic_boots"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/gothic_boots", obj);
-        }
-        // jousting_chestplate
-        {
-            JsonObject obj = armorForgingBase("jousting_chestplate", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("p", itemRef("overgeared:steel_plate"));
-            key.add("k", itemRef("magistuarmory:knight_chestplate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"pkp", "ppp", "ppp"}));
-            obj.add("result", resultRef("magistuarmory:jousting_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/jousting_chestplate", obj);
-        }
-        // jousting_leggings
-        {
-            JsonObject obj = armorForgingBase("jousting_leggings", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("p", itemRef("overgeared:steel_plate"));
-            key.add("k", itemRef("magistuarmory:knight_leggings"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"ppp", "pkp", "p p"}));
-            obj.add("result", resultRef("magistuarmory:jousting_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/jousting_leggings", obj);
-        }
-        // jousting_boots
-        {
-            JsonObject obj = armorForgingBase("jousting_boots", "armor", 5, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("p", itemRef("overgeared:steel_plate"));
-            key.add("k", itemRef("magistuarmory:knight_boots"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "pkp", "p p"}));
-            obj.add("result", resultRef("magistuarmory:jousting_boots"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/jousting_boots", obj);
-        }
-        // kastenbrust_chestplate
-        {
-            JsonObject obj = armorForgingBase("kastenbrust_chestplate", "armor", 9, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("H", itemRef("magistuarmory:halfarmor_chestplate"));
-            key.add("S", itemRef("magistuarmory:small_steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "PHP", "SPS"}));
-            obj.add("result", resultRef("magistuarmory:kastenbrust_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/kastenbrust_chestplate", obj);
-        }
-        // kastenbrust_leggings
-        {
-            JsonObject obj = armorForgingBase("kastenbrust_leggings", "armor", 11, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("S", itemRef("magistuarmory:small_steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"PPP", "PSP", "PSP"}));
-            obj.add("result", resultRef("magistuarmory:kastenbrust_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/kastenbrust_leggings", obj);
-        }
-        // kastenbrust_boots
-        {
-            JsonObject obj = armorForgingBase("kastenbrust_boots", "armor", 8, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("S", itemRef("magistuarmory:small_steel_plate"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "P P", "S S"}));
-            obj.add("result", resultRef("magistuarmory:kastenbrust_boots"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/kastenbrust_boots", obj);
-        }
-        // cuirassier_chestplate
-        {
-            JsonObject obj = armorForgingBase("cuirassier_chestplate", "armor", 9, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{" I ", "III", "PIP"}));
-            obj.add("result", resultRef("magistuarmory:cuirassier_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/cuirassier_chestplate", obj);
-        }
-        // cuirassier_helmet
-        {
-            JsonObject obj = armorForgingBase("cuirassier_helmet", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"   ", "PIP", "P P"}));
-            obj.add("result", resultRef("magistuarmory:cuirassier_helmet"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/cuirassier_helmet", obj);
-        }
-        // xivcenturyknight_chestplate
-        {
-            JsonObject obj = armorForgingBase("xivcenturyknight_chestplate", "armor", 7, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"P P", "PPP", "CCC"}));
-            obj.add("result", resultRef("magistuarmory:xivcenturyknight_chestplate"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/xivcenturyknight_chestplate", obj);
-        }
-        // xivcenturyknight_leggings
-        {
-            JsonObject obj = armorForgingBase("xivcenturyknight_leggings", "armor", 6, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("P", itemRef("overgeared:steel_plate"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"CCC", "P P", "P P"}));
-            obj.add("result", resultRef("magistuarmory:xivcenturyknight_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/xivcenturyknight_leggings", obj);
-        }
-        // crusader_leggings
-        {
-            JsonObject obj = armorForgingBase("crusader_leggings", "armor", 6, true, true, true);
-            JsonObject key = new JsonObject();
-            key.add("I", itemRef("overgeared:heated_steel_ingot"));
-            key.add("C", itemRef("magistuarmory:steel_chainmail"));
-            obj.add("key", key);
-            obj.add("pattern", strArray(new String[]{"CCC", "I I", "I I"}));
-            obj.add("result", resultRef("magistuarmory:crusader_leggings"));
-            obj.addProperty("show_notification", true);
-            save(cache, futures, "forging/crusader_leggings", obj);
-        }
-    }
-
-    private JsonObject armorForgingBase(String blueprint, String category,
-                                         int hammering, boolean hasQuality,
-                                         boolean quench, boolean minigame) {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("type", "overgeared:forging");
-        obj.addProperty("category", category);
-        if (blueprint != null) {
-            JsonArray bp = new JsonArray();
-            bp.add(blueprint);
-            obj.add("blueprint", bp);
-            obj.addProperty("requires_blueprint", false);
-        }
-        obj.addProperty("hammering", hammering);
-        obj.addProperty("has_quality", hasQuality);
-        obj.addProperty("need_quenching", quench);
-        obj.addProperty("needs_minigame", minigame);
-        return obj;
     }
 
     // ── Shield forging ────────────────────────────────────────────────────────
@@ -990,35 +542,23 @@ public class OvergearedRecipeProvider implements DataProvider {
         }
     }
 
-    // ── JSON helpers ──────────────────────────────────────────────────────────
-
     // ── Craftable blueprints ─────────────────────────────────────────────────
     // Alternative to the drafting-table selector: craft a ready-made blueprint by
     // combining an empty blueprint with the item that blueprint forges.
 
     private void generateBlueprintCrafting(CachedOutput cache, List<CompletableFuture<?>> futures) {
         // Weapons: representative = the steel (or first non-stone) blade the blueprint forges.
-        for (BladeType type : BladeType.values()) {
-            BladeMaterial mat = canonicalBladeMaterial(type);
-            String blade = modId + ":" + mat.getName() + "_" + type.getName() + type.getSuffix();
-            saveBlueprintRecipe(cache, futures, type.getName(), blade);
+        for (BladeType type : types) {
+            saveBlueprintRecipe(cache, futures, type.getTooltype(), type.itemId(type.canonicalMaterial()));
         }
-        for (String t : SHIELD_BLUEPRINT_TYPES) {
-            saveBlueprintRecipe(cache, futures, t, "magistuarmory:steel_" + t);
+        if (!addon) {
+            for (String t : ForgingTable.SHIELDS.keySet()) {
+                saveBlueprintRecipe(cache, futures, t, "magistuarmory:steel_" + t);
+            }
         }
-        for (String t : ARMOR_BLUEPRINT_TYPES) {
-            saveBlueprintRecipe(cache, futures, t, "magistuarmory:" + t);
+        for (ForgingTable.Entry e : ForgingTable.of(addon)) {
+            if (e.blueprint() != null) saveBlueprintRecipe(cache, futures, e.blueprint(), e.result());
         }
-    }
-
-    private static BladeMaterial canonicalBladeMaterial(BladeType type) {
-        BladeMaterial first = null;
-        for (BladeMaterial m : type.getMaterials()) {
-            if (m == BladeMaterial.STONE) continue;
-            if (m == BladeMaterial.STEEL) return m;
-            if (first == null) first = m;
-        }
-        return first != null ? first : BladeMaterial.STEEL;
     }
 
     private void saveBlueprintRecipe(CachedOutput cache, List<CompletableFuture<?>> futures,
@@ -1053,6 +593,30 @@ public class OvergearedRecipeProvider implements DataProvider {
 
         save(cache, futures, "blueprint/" + toolType, obj);
     }
+
+    // ── Tool cast EMI placeholders ─────────────────────────────────────────────
+
+    // Overgeared's ToolCastEmiRecipe builds IDs like "overgeared:clay_tool_cast/{type}"
+    // without the synthetic "/" prefix, so EMI validates them against the recipe manager.
+    // Adding a placeholder crafting_cast recipe at each expected path silences the warnings.
+    private void generateToolCastPlaceholders(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        JsonObject placeholder = new JsonObject();
+        placeholder.addProperty("type", "overgeared:crafting_cast");
+        placeholder.addProperty("category", "misc");
+
+        List<String> tooltypes = new ArrayList<>();
+        for (BladeType type : types) {
+            if (!tooltypes.contains(type.getTooltype())) tooltypes.add(type.getTooltype());
+        }
+        if (!addon) tooltypes.add("chainmorgenstern");
+
+        for (String type : tooltypes) {
+            saveAs(cache, futures, "overgeared", "clay_tool_cast/" + type, placeholder);
+            saveAs(cache, futures, "overgeared", "nether_tool_cast/" + type, placeholder);
+        }
+    }
+
+    // ── JSON helpers ──────────────────────────────────────────────────────────
 
     private JsonObject itemRef(String id) {
         JsonObject o = new JsonObject();
@@ -1096,36 +660,17 @@ public class OvergearedRecipeProvider implements DataProvider {
         return result;
     }
 
-    // ── Tool cast EMI placeholders ─────────────────────────────────────────────
-
-    // Overgeared's ToolCastEmiRecipe builds IDs like "overgeared:clay_tool_cast/{type}"
-    // without the synthetic "/" prefix, so EMI validates them against the recipe manager.
-    // Adding a placeholder crafting_cast recipe at each expected path silences the warnings.
-    private void generateToolCastPlaceholders(CachedOutput cache, List<CompletableFuture<?>> futures) {
-        JsonObject placeholder = new JsonObject();
-        placeholder.addProperty("type", "overgeared:crafting_cast");
-        placeholder.addProperty("category", "misc");
-
-        List<String> types = new java.util.ArrayList<>();
-        for (BladeType type : BladeType.values()) {
-            types.add(type.getName());
-        }
-        types.add("chainmorgenstern");
-
-        for (String type : types) {
-            saveAs(cache, futures, "overgeared", "clay_tool_cast/" + type, placeholder);
-            saveAs(cache, futures, "overgeared", "nether_tool_cast/" + type, placeholder);
-        }
-    }
-
     // ── IO ────────────────────────────────────────────────────────────────────
 
+    /** Saves under this mod's namespace; addon recipes get the {@code addon/} path prefix. */
     private void save(CachedOutput cache, List<CompletableFuture<?>> futures,
                       String recipePath, JsonObject json) {
-        Path path = recipePaths.json(ResourceLocation.fromNamespaceAndPath(modId, recipePath));
-        futures.add(DataProvider.saveStable(cache, json, path));
+        String path = (addon ? "addon/" : "") + recipePath;
+        futures.add(DataProvider.saveStable(cache, json,
+                recipePaths.json(ResourceLocation.fromNamespaceAndPath(modId, path))));
     }
 
+    /** Saves under a foreign namespace at the exact path (no prefix). */
     private void saveAs(CachedOutput cache, List<CompletableFuture<?>> futures,
                         String namespace, String recipePath, JsonObject json) {
         Path path = recipePaths.json(ResourceLocation.fromNamespaceAndPath(namespace, recipePath));

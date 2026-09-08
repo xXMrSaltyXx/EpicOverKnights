@@ -37,6 +37,14 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="overgeared"
     mandatory=true
-    versionRange="[1.6.32,)"
+    versionRange="[1.6.33,)"
+    ordering="AFTER"
+    side="BOTH"
+
+# Optional — Epic Knights: Addon. Its weapons get Overgeared recipes when it is present.
+[[dependencies.${mod_id}]]
+    modId="magistuarmoryaddon"
+    mandatory=false
+    versionRange="[2.6,)"
     ordering="AFTER"
     side="BOTH"

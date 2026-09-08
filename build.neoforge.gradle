@@ -31,8 +31,16 @@ repositories {
         url = "${rootProject.projectDir}/libs/mvn"
         metadataSources { artifact() } // jars only, no POMs
     }
-    maven { url "https://api.modrinth.com/maven" }
-    maven { url "https://www.cursemaven.com" }
+    // Exclusive: other repos (e.g. maven.neoforged.net) answer 502 instead of 404 for unknown
+    // paths, which aborts resolution before Modrinth is asked.
+    exclusiveContent {
+        forRepository { maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' } }
+        filter { includeGroup 'maven.modrinth' }
+    }
+    exclusiveContent {
+        forRepository { maven { name = 'CurseMaven'; url = 'https://www.cursemaven.com' } }
+        filter { includeGroup 'curse.maven' }
+    }
 }
 
 // NeoForge 1.21.1 ships Java 21.
@@ -84,11 +92,17 @@ configurations { runtimeClasspath.extendsFrom localRuntime }
 
 dependencies {
     // Overgeared — compile (builder API) + runtime. 1.21.1 mods are in official mappings (no remap).
-    compileOnly "maven.modrinth:overgeared:otsHkv1p"
-    localRuntime "maven.modrinth:overgeared:otsHkv1p"
+    // Pinned by Modrinth version id ("1.21.1-1.6.17").
+    compileOnly "maven.modrinth:overgeared:qTNDlpdo"
+    localRuntime "maven.modrinth:overgeared:qTNDlpdo"
 
     // Epic Knights — runtime only, local jar with the DataGen fix (1.21.1 jars are official-mapped).
     localRuntime "local:epic-knights-neoforge:10.12"
+
+    // Epic Knights: Addon — optional at runtime, but needed on the DataGen classpath so the
+    // addon blades and their datapack are generated. Pinned by Modrinth version id ("2.5"
+    // is shared by the neoforge and fabric builds).
+    localRuntime "maven.modrinth:epic-knights-addon:ZLkRGFj6"
 
     // Runtime deps + dev tooling.
     localRuntime "maven.modrinth:architectury-api:ZxYGwlk0"
