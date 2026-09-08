@@ -39,6 +39,7 @@ public class OvergearedStaticDataProvider implements DataProvider {
             generateKnappingResources(cache, futures);
             generateKnappablesTag(cache, futures);
             generateSteelTags(cache, futures);
+            generateSmithingHammerTags(cache, futures);
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -119,6 +120,21 @@ public class OvergearedStaticDataProvider implements DataProvider {
         obj.add("values", values);
         saveTo(cache, futures,
                 "overgeared", Mappings.TAG_ITEM_DIR + "/knappables", obj);
+    }
+
+    // ── overgeared/tags/items/smithing_hammers: Epic Knights' blacksmith hammer works on the anvil ──
+    // Overgeared identifies hammers purely by tag. iron_smithing_hammers (Overgeared 1.6.33 / 1.6.17)
+    // places it at the iron tier when tiered hammer forging is enabled; harmless on older versions.
+
+    private void generateSmithingHammerTags(CachedOutput cache, List<CompletableFuture<?>> futures) {
+        for (String tag : new String[]{"smithing_hammers", "iron_smithing_hammers"}) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("replace", false);
+            JsonArray vals = new JsonArray();
+            vals.add("magistuarmory:blacksmith_hammer");
+            obj.add("values", vals);
+            saveTo(cache, futures, "overgeared", Mappings.TAG_ITEM_DIR + "/" + tag, obj);
+        }
     }
 
     // ── common steel tags: Epic Knights' steel is replaced by Overgeared's ────

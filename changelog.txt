@@ -17,6 +17,8 @@ Overgeared x Epic Knights Changelog
   for recipe conflicts (all base and addon recipes are verified conflict-free)
 - Verified against Overgeared 1.20.1-1.6.33 and 1.21.1-1.6.17; minimum Overgeared version raised
   accordingly
+- The Epic Knights blacksmith hammer is tagged as an Overgeared smithing hammer (iron tier)
+  and works on the smithing anvil
 
 1.0.0 (2026)
 ------------
